@@ -47,3 +47,7 @@ def prettyPrint(sourceArr,destinationArr,distArr):
             print(val, end='\t')
         print()
     print()
+
+
+
+
