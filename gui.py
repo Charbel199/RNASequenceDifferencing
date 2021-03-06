@@ -19,7 +19,8 @@ class MyWindow:
         self.firstSequenceLabel=Label(win, text='First sequence')
         self.secondSequenceLabel=Label(win, text='Second sequence')
         self.distanceArrayLabel=Label(win, text='Distance Array')
-        self.editScriptLabel = Label(win, text='Distance Array')
+        self.editScriptLabel = Label(win, text='Edit Scripts')
+        self.editScriptLabel = Label(win, text='Edit Scripts')
         self.editDistanceLabel = Label(win, text='Edit distance: ')
 
         self.firstSequence=Entry(bd=3, width=50)
@@ -56,6 +57,7 @@ class MyWindow:
         self.distanceArray.insert(END, distArr)
         self.editDistance.insert(END, distArr[distArr.shape[0]-1][distArr.shape[1]-1])
     def getEditScripts(self):
+        self.getDistanceArray()
         self.editScript.delete('1.0', 'end')
         A = str(self.firstSequence.get())
         B = str(self.secondSequence.get())
