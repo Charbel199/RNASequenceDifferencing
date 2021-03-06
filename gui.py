@@ -20,7 +20,6 @@ class MyWindow:
         self.secondSequenceLabel=Label(win, text='Second sequence')
         self.distanceArrayLabel=Label(win, text='Distance Array')
         self.editScriptLabel = Label(win, text='Edit Scripts')
-        self.editScriptLabel = Label(win, text='Edit Scripts')
         self.editDistanceLabel = Label(win, text='Edit distance: ')
 
         self.firstSequence=Entry(bd=3, width=50)
