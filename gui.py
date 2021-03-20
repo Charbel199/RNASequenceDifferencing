@@ -58,6 +58,7 @@ class MyWindow:
         A=str(self.firstSequence.get())
         B=str(self.secondSequence.get())
         distArr = differencing.differenceCalculation(A.upper(), B.upper(),medicalSimilarity=self.medicalSimilarity.get())
+        print(distArr)
         self.distanceArray.insert(END, distArr)
         self.editDistance.insert(END, distArr[distArr.shape[0]-1][distArr.shape[1]-1])
     def getEditScripts(self):
