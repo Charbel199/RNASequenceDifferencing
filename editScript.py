@@ -1,5 +1,7 @@
 from collections import deque
-
+import params
+import utils
+import updateLogic
 #TODO: Work on editscript convention here
 def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr):
     previousNodes = []
@@ -41,10 +43,18 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr):
 
         ##Check update
         if (sourceArr[currX - 1] == destinationArr[currY - 1]):
+            ##If same node
             if (fromUpdateValue == (currValue)):
                 previousNodes.append((fromUpdateX, fromUpdateY))
         else:
-            if (fromUpdateValue == (currValue - 1)):
+            ##If different node
+
+
+            sourceNode = str(sourceArr[currX - 1])
+            destinationNode = str(destinationArr[currY - 1])
+            updateValue = updateLogic.updateNode(sourceNode,destinationNode)
+
+            if (fromUpdateValue == (currValue - updateValue)):
                 previousNodes.append((fromUpdateX, fromUpdateY))
 
     return previousNodes

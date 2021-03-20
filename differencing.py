@@ -1,7 +1,10 @@
 import numpy as np
+import params
+import utils
+import updateLogic
 
-def differenceCalculation(sourceArr, destinationArr):
-    distArr = np.empty(shape=(len(sourceArr) + 1, len(destinationArr) + 1), dtype=np.int16)
+def differenceCalculation(sourceArr, destinationArr, medicalSimilarity = 0):
+    distArr = np.empty(shape=(len(sourceArr) + 1, len(destinationArr) + 1), dtype=np.float16)
 
     for sourceIndex in range(distArr.shape[0]):
         for destinationIndex in  range(distArr.shape[1]):
@@ -23,7 +26,21 @@ def differenceCalculation(sourceArr, destinationArr):
             canUpdate = distArr[sourceIndex-1, destinationIndex-1]
             updateValue = 0
             if(sourceArr[sourceIndex-1] != destinationArr[destinationIndex-1]):
-                updateValue = 1
+                '''
+                Complex logic here
+                - R represents G or A (purine)
+                - M represents A or C (amino)
+                - S represents G or C
+                - V represents G, A, or C
+                - N represents G, U, A, or C. In other words, N basically represents any canonical nucleotide base.
+                Assumption: If probability higher: Cost less
+                Cost = 1 - Proba
+                '''
+                print('Update: Source: ',sourceArr[sourceIndex-1],' destination: ',destinationArr[destinationIndex-1])
+                sourceNode = str(sourceArr[sourceIndex-1])
+                destinationNode = str(destinationArr[destinationIndex-1])
+                updateValue = updateLogic.updateNode(sourceNode,destinationNode)
+
 
             determinedValue = min([canInsert+1,canDelete+1,canUpdate+updateValue])
             distArr[sourceIndex, destinationIndex] = determinedValue

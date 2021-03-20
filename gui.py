@@ -16,6 +16,7 @@ from tkinter import *
 
 class MyWindow:
     def __init__(self, win):
+        self.medicalSimilarity = IntVar()
         self.firstSequenceLabel=Label(win, text='First sequence')
         self.secondSequenceLabel=Label(win, text='Second sequence')
         self.distanceArrayLabel=Label(win, text='Distance Array')
@@ -38,9 +39,11 @@ class MyWindow:
         self.getDistancArrButton=Button(win, text='Get Distance Array', command=self.getDistanceArray)
         self.getEditScriptsButton=Button(win, text='Get Edit Scripts', command=self.getEditScripts)
         self.clearSequences = Button(win, text='Clear', command=self.clearSequences)
+        self.medicalSimilarityButton = Checkbutton(win, text="Medical Similarity", variable=self.medicalSimilarity)
         self.getDistancArrButton.place(x=100, y=150)
         self.getEditScriptsButton.place(x=250, y=150)
         self.clearSequences.place(x=450, y=150)
+        self.medicalSimilarityButton.place(x=550, y=75)
 
         self.editDistanceLabel.place(x=600,y=150)
         self.editDistance.place(x=680,y=150)
@@ -54,7 +57,7 @@ class MyWindow:
         self.editDistance.delete(0, END)
         A=str(self.firstSequence.get())
         B=str(self.secondSequence.get())
-        distArr = differencing.differenceCalculation(A, B)
+        distArr = differencing.differenceCalculation(A.upper(), B.upper(),medicalSimilarity=self.medicalSimilarity.get())
         self.distanceArray.insert(END, distArr)
         self.editDistance.insert(END, distArr[distArr.shape[0]-1][distArr.shape[1]-1])
     def getEditScripts(self):
@@ -62,8 +65,8 @@ class MyWindow:
         self.editScript.delete('1.0', 'end')
         A = str(self.firstSequence.get())
         B = str(self.secondSequence.get())
-        distArr = differencing.differenceCalculation(A, B)
-        editScripts = ed.getEditScripts(distArr, A, B)
+        distArr = differencing.differenceCalculation(A.upper(), B.upper(), medicalSimilarity=self.medicalSimilarity.get())
+        editScripts = ed.getEditScripts(distArr, A.upper(), B.upper())
         for es in editScripts:
             self.editScript.insert(END, es)
             self.editScript.insert(END,"\n")
