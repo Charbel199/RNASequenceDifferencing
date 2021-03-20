@@ -37,11 +37,13 @@ class MyWindow:
 
         self.getDistancArrButton=Button(win, text='Get Distance Array', command=self.getDistanceArray)
         self.getEditScriptsButton=Button(win, text='Get Edit Scripts', command=self.getEditScripts)
+        self.clearSequences = Button(win, text='Clear', command=self.clearSequences)
         self.getDistancArrButton.place(x=100, y=150)
         self.getEditScriptsButton.place(x=250, y=150)
+        self.clearSequences.place(x=450, y=150)
 
-        self.editDistanceLabel.place(x=400,y=150)
-        self.editDistance.place(x=480,y=150)
+        self.editDistanceLabel.place(x=600,y=150)
+        self.editDistance.place(x=680,y=150)
 
         self.distanceArrayLabel.place(x=100, y=200)
         self.distanceArray.place(x=200, y=200)
@@ -65,6 +67,12 @@ class MyWindow:
         for es in editScripts:
             self.editScript.insert(END, es)
             self.editScript.insert(END,"\n")
+    def clearSequences(self):
+        self.firstSequence.delete(0,END)
+        self.secondSequence.delete(0, END)
+        self.distanceArray.delete('1.0', END)
+        self.editDistance.delete(0, END)
+        self.editScript.delete('1.0', 'end')
 
 window=Tk()
 mywin=MyWindow(window)
