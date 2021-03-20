@@ -49,7 +49,6 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr, medic
         else:
             ##If different node
 
-
             sourceNode = str(sourceArr[currX - 1])
             destinationNode = str(destinationArr[currY - 1])
             updateValue = updateLogic.updateNode(sourceNode,destinationNode, medicalSimilarity=medicalSimilarity)

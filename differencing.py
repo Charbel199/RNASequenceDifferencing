@@ -26,17 +26,7 @@ def differenceCalculation(sourceArr, destinationArr, medicalSimilarity = 0):
             canUpdate = distArr[sourceIndex-1, destinationIndex-1]
             updateValue = 0
             if(sourceArr[sourceIndex-1] != destinationArr[destinationIndex-1]):
-                '''
-                Complex logic here
-                - R represents G or A (purine)
-                - M represents A or C (amino)
-                - S represents G or C
-                - V represents G, A, or C
-                - N represents G, U, A, or C. In other words, N basically represents any canonical nucleotide base.
-                Assumption: If probability higher: Cost less
-                Cost = 1 - Proba
-                '''
-                print('Update: Source: ',sourceArr[sourceIndex-1],' destination: ',destinationArr[destinationIndex-1])
+
                 sourceNode = str(sourceArr[sourceIndex-1])
                 destinationNode = str(destinationArr[destinationIndex-1])
                 updateValue = updateLogic.updateNode(sourceNode,destinationNode,medicalSimilarity=medicalSimilarity)
