@@ -3,7 +3,7 @@ import params
 import utils
 import updateLogic
 #TODO: Work on editscript convention here
-def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr):
+def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr, medicalSimilarity = 0):
     previousNodes = []
 
     currX = currentNode[0]
@@ -52,7 +52,7 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr):
 
             sourceNode = str(sourceArr[currX - 1])
             destinationNode = str(destinationArr[currY - 1])
-            updateValue = updateLogic.updateNode(sourceNode,destinationNode)
+            updateValue = updateLogic.updateNode(sourceNode,destinationNode, medicalSimilarity=medicalSimilarity)
 
             if (fromUpdateValue == (currValue - updateValue)):
                 previousNodes.append((fromUpdateX, fromUpdateY))
@@ -61,22 +61,22 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr):
 
 
 
-def getEditScripts(distArr, sourceArr, destinationArr):
+def getEditScripts(distArr, sourceArr, destinationArr, medicalSimilarity = 0):
     editScripts = []
     stack = deque()
     lastNode = (distArr.shape[0]-1, distArr.shape[1]-1)
-    editScripts = recursivePath(stack,lastNode,distArr,sourceArr,destinationArr,editScripts)
+    editScripts = recursivePath(stack,lastNode,distArr,sourceArr,destinationArr,editScripts,medicalSimilarity=medicalSimilarity)
     return editScripts
 
-def recursivePath(stack,currentNode,distArr,sourceArr,destinationArr,editScripts):
+def recursivePath(stack,currentNode,distArr,sourceArr,destinationArr,editScripts, medicalSimilarity = 0):
     ##Append current node to stack
     stack.append(currentNode)
     ##Get possible previous nodes
-    prevNodes = possiblePreviousNodes(currentNode,distArr,sourceArr,destinationArr)
+    prevNodes = possiblePreviousNodes(currentNode,distArr,sourceArr,destinationArr, medicalSimilarity=medicalSimilarity)
 
     ##Repeat algorithm for all previous nodes
     for prevNode in prevNodes:
-        recursivePath(stack,prevNode,distArr,sourceArr,destinationArr,editScripts)
+        recursivePath(stack,prevNode,distArr,sourceArr,destinationArr,editScripts,medicalSimilarity=medicalSimilarity)
 
 
     ##If got to this point: No more previous nodes found

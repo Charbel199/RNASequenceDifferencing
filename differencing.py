@@ -39,7 +39,7 @@ def differenceCalculation(sourceArr, destinationArr, medicalSimilarity = 0):
                 print('Update: Source: ',sourceArr[sourceIndex-1],' destination: ',destinationArr[destinationIndex-1])
                 sourceNode = str(sourceArr[sourceIndex-1])
                 destinationNode = str(destinationArr[destinationIndex-1])
-                updateValue = updateLogic.updateNode(sourceNode,destinationNode)
+                updateValue = updateLogic.updateNode(sourceNode,destinationNode,medicalSimilarity=medicalSimilarity)
 
 
             determinedValue = min([canInsert+1,canDelete+1,canUpdate+updateValue])

@@ -66,7 +66,7 @@ class MyWindow:
         A = str(self.firstSequence.get())
         B = str(self.secondSequence.get())
         distArr = differencing.differenceCalculation(A.upper(), B.upper(), medicalSimilarity=self.medicalSimilarity.get())
-        editScripts = ed.getEditScripts(distArr, A.upper(), B.upper())
+        editScripts = ed.getEditScripts(distArr, A.upper(), B.upper(), medicalSimilarity=self.medicalSimilarity.get())
         for es in editScripts:
             self.editScript.insert(END, es)
             self.editScript.insert(END,"\n")
