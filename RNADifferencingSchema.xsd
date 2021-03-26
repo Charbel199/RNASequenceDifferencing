@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="RNADifferencing">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="EditScript" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Operation" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="OperationType" type="operationType"/>
+                                        <xs:element name="Index" minOccurs="2" maxOccurs="2">
+                                            <xs:complexType>
+                                                <xs:attribute name="sourceOrDestination"
+                                                              type="sourceOrDestinationType"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="Nucleotide" maxOccurs="2">
+                                            <xs:complexType>
+                                                <xs:attribute name="sourceOrDestination"
+                                                              type="sourceOrDestinationType"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="operationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Insert"/>
+            <xs:enumeration value="Delete"/>
+            <xs:enumeration value="Update"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="sourceOrDestinationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Source"/>
+            <xs:enumeration value="Destination"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

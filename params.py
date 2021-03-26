@@ -11,11 +11,12 @@ R/M/S update cost: 1/2
 V update cost: 2/3
 N update cost: 3/4
 '''
-specialNucleotides = ['R','M','S','V','N']
+
+specialNucleotides = ['R', 'M', 'S', 'V', 'N']
 specialNucleotidesRepresentations = {
-    'R' : ['G','A'],
-    'M' : ['A','C'],
-    'S' : ['G','C'],
-    'V' : ['G','A','C'],
-    'N' : ['G','U','A','C']
+    'R': ['G', 'A'],
+    'M': ['A', 'C'],
+    'S': ['G', 'C'],
+    'V': ['G', 'A', 'C'],
+    'N': ['G', 'U', 'A', 'C']
 }
