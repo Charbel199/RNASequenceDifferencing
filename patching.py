@@ -1,119 +1,84 @@
 import xml.etree.cElementTree as ET
 
-global insertIndices
-global MAX_SIZE
-MAX_SIZE = 500
+
+def insert_in_sequence(sequence, index, nucleotide):
+    if index == len(sequence):
+        sequence = sequence + nucleotide
+        return sequence
+    sequence = sequence[0:index] + nucleotide + sequence[index:]
+    return sequence
 
 
-# GAUCUUCC  SFAFD
-
-def insertcounter(index):
-    insertCounter = 0
-    for i in insertIndices:
-        if i <= index:
-            insertCounter += 1
-    return insertCounter
+def delete_from_sequence(sequence, index):
+    sequence = sequence[0:index] + sequence[index + 1:]
+    return sequence
 
 
-def Insert(operation, source, reverse=0):
-    op = operation
-    if reverse == 0:
-        indices = op.findall('Index')
-        for i in indices:
-            if i.attrib['sourceOrDestination'] == 'Source':
-                index = int(i.text)
-        Nucleotide = op.find('Nucleotide').text
-        insertCounter = insertcounter(index)
-        print(source)
-        if source[index + insertCounter] == '':
-            source[index + insertCounter] = Nucleotide
-        else:
-            source.insert(index + insertCounter, Nucleotide)
-        print(source)
-        insertIndices.append(index)
+def update_in_sequence(sequence, index, nucleotide):
+    sequence = sequence[0:index] + nucleotide + sequence[index + 1:]
+    return sequence
+
+
+def Insert(sequence, sourceIndex, destinationIndex, nucleotide, reverse=0):
+    if not reverse:
+        sequence = insert_in_sequence(sequence, destinationIndex, nucleotide)
+        return sequence
     else:
-        DeleteReverse(op, source)
+        sequence = delete_from_sequence(sequence, sourceIndex)
+        return sequence
 
 
-def InsertReverse(operation, source):
-    op = operation
-    indices = op.findall('Index')
-    for i in indices:
-        if i.attrib['sourceOrDestination'] == 'Destination':
-            index = int(i.text)
-    Nucleotide = op.find('Nucleotide').text
-    insertCounter = insertcounter(index)
-    print(source)
-    if source[index + insertCounter] == '':
-        source[index + insertCounter] = Nucleotide
+def Delete(sequence, sourceIndex, destinationIndex, nucleotide, reverse=0):
+    if not reverse:
+        sequence = delete_from_sequence(sequence, destinationIndex)
+        return sequence
     else:
-        source.insert(index + insertCounter, Nucleotide)
-    print(source)
-    insertIndices.append(index)
+        sequence = insert_in_sequence(sequence, sourceIndex, nucleotide)
+        return sequence
 
 
-def Delete(operation, source, reverse=0):
-    op = operation
-    if reverse == 0:
-        indices = op.findall('Index')
-        for i in indices:
-            if i.attrib['sourceOrDestination'] == 'Source':
-                index = int(i.text)
-        insertCounter = insertcounter(index)
-        print(source)
-        source[index + insertCounter] = ";"
-        print(source)
+def Update(sequence, sourceIndex, destinationIndex, sourceNucleotide, destinationNucleotide, reverse=0):
+    if not reverse:
+        sequence = update_in_sequence(sequence, destinationIndex, destinationNucleotide)
+        return sequence
     else:
-        InsertReverse(op, source)
-
-
-def DeleteReverse(operation, source):
-    op = operation
-    indices = op.findall('Index')
-    for i in indices:
-        if i.attrib['sourceOrDestination'] == 'Destination':
-            index = int(i.text)
-    insertCounter = insertcounter(index)
-    print(source)
-    source[index + insertCounter] = ";"
-    print(source)
-
-
-def Update(operation, source, reverse=0):
-    op = operation
-    indices = op.findall('Index')
-    for ind in indices:
-        if ind.attrib['sourceOrDestination'] == ('Source' if reverse == 0 else 'Destination'):
-            index = int(ind.text)
-    Nucleotides = op.findall('Nucleotide')
-    for n in Nucleotides:
-        if n.attrib['sourceOrDestination'] == ('Destination' if reverse == 0 else 'Source'):
-            Nucleotide = n.text
-    insertCounter = insertcounter(index)
-    print(source)
-    source[index + insertCounter] = Nucleotide
-    print(source)
+        sequence = update_in_sequence(sequence, sourceIndex, sourceNucleotide)
+        return sequence
 
 
 def patch(file, sequence, reverse=0):
-    global insertIndices
-    insertIndices = []
-    source = sequence
-    source = [char for char in source]
-    source = source + [''] * MAX_SIZE
     differenceFile = file
+    # Parse XML
     tree = ET.parse(differenceFile)
     root_xml = tree.getroot()
     editScript = root_xml.find('EditScript')
+    # Get all operations
     operations = editScript.findall('Operation')
     for op in operations:
+        # Getting operation, source index and destination index.
         operationType = op.find('OperationType').text
+        indices = op.findall('Index')
+        for i in indices:
+            if i.attrib['sourceOrDestination'] == 'Source':
+                sourceIndex = int(i.text)
+            if i.attrib['sourceOrDestination'] == 'Destination':
+                destinationIndex = int(i.text)
+
         if operationType == 'Insert':
-            Insert(op, source, reverse)
+            nucleotide = op.find('Nucleotide').text
+            sequence = Insert(sequence, sourceIndex, destinationIndex, nucleotide, reverse)
+
         if operationType == 'Delete':
-            Delete(op, source, reverse)
+            nucleotide = op.find('Nucleotide').text
+            sequence = Delete(sequence, sourceIndex, destinationIndex, nucleotide, reverse)
+
         if operationType == 'Update':
-            Update(op, source, reverse)
-    source = "".join(source)
-    destination = source.replace(';', '')
-    return destination
+            nucleotides = op.findall('Nucleotide')
+            for n in nucleotides:
+                if n.attrib['sourceOrDestination'] == 'Source':
+                    sourceNucleotide = n.text
+                if n.attrib['sourceOrDestination'] == 'Destination':
+                    destinationNucleotide = n.text
+            sequence = Update(sequence, sourceIndex, destinationIndex, sourceNucleotide, destinationNucleotide, reverse)
+
+    return sequence

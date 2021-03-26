@@ -93,7 +93,6 @@ def recursivePath(stack, currentNode, distArr, sourceArr, destinationArr, editSc
         script = list(stack)
         if operations == 1:
             for i, node in enumerate(script):
-                print(script)
                 if i == 0:
                     script[i] = ()
                 else:

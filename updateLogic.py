@@ -40,7 +40,7 @@ def updateNode(sourceNode, destinationNode, medicalSimilarity=0):
 
 
 '''
-Medicaly, nucleotides are grouped in 3,
+Medically, nucleotides are grouped in 3,
  therefore it costs 0 to transform a complex nucleotide to one of its nucleotide representation and vice versa.
 '''
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RNADataBank>
+    <RNA>
+        <accession>AB00263</accession>
+        <desciprtion>Homo sapiens mRNA for prepro cortistatin like peptide, complete cds.</desciprtion>
+        <length>207</length>
+        <sequence>
+            ACAAGAUGCCAUUGUCCCCCGGCCUCCUGCUGCUGCUGCUCUCGGGGCCACGGCCACCGCUGCCCUGCCCCUGGAGGGUGGCCCCACCGGCCGAGACAGCGAGCAUACAGGAAGCGGCAGGAAUAAGGAAAAGCAGCCUGCAGGAACUUCUUCUGGAAGACCUUCUCCUCCUGCAAAUAAAACCUCACCCAUGAAUGCUCACGCAAG
+        </sequence>
+    </RNA>
+</RNADataBank>

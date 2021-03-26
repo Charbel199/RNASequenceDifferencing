@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import lxml.etree as et
+import xml.etree.cElementTree as parser
 
 
 def prettyPrint(fileName):
@@ -12,12 +13,10 @@ def prettyPrint(fileName):
 
 
 def differencing(editScripts):
-    print(editScripts)
     RNADifferencing = ET.Element('RNADifferencing')
     for es in editScripts:
         EditScript = ET.SubElement(RNADifferencing, 'EditScript')
         for op in es:
-            print(op)
             Operation = ET.SubElement(EditScript, 'Operation')
             OperationType = ET.SubElement(Operation, 'OperationType')
             OperationType.text = op[2]
@@ -41,3 +40,9 @@ def differencing(editScripts):
     myFile.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + myData)
     myFile.close()
     prettyPrint(fileName)
+
+
+def sequenceExtraction(fileName):
+    tree = ET.parse(fileName)
+    sequence = tree.getroot().find('RNA').find('sequence').text.strip()
+    return sequence

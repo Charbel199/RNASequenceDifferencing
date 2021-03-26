@@ -1,6 +1,4 @@
 import numpy as np
-import params
-import utils
 import updateLogic
 
 
@@ -40,24 +38,16 @@ def differenceCalculation(sourceArr, destinationArr, medicalSimilarity=0):
 def prettyPrint(sourceArr, destinationArr, distArr):
     # Printing table
     prettyTable = '\t\t'
-    print('\t\t', end='')
     for letter in destinationArr:
-        print(letter + '\t', end='')
         prettyTable += str(letter) + '\t'
-    print()
     prettyTable += '\n'
     for sourceIndex, row in enumerate(distArr):
         if sourceIndex == 0:
-            print('\t', end='')
             prettyTable += '\t'
         else:
-            print(sourceArr[sourceIndex - 1] + '\t', end='')
             prettyTable += str(sourceArr[sourceIndex -1]) + '\t'
         for destinationIndex, val in enumerate(row):
-            print(val, end='\t')
             prettyTable += str(val) + '\t'
-        print()
         prettyTable += '\n'
-    print()
     prettyTable += '\n'
     return prettyTable
