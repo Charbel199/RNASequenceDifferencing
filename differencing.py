@@ -1,10 +1,12 @@
 import numpy as np
 import updateLogic
 
-
+#Getting distance array
 def differenceCalculation(sourceArr, destinationArr, medicalSimilarity=0):
+    #Initializing empty distance array
     distArr = np.empty(shape=(len(sourceArr) + 1, len(destinationArr) + 1), dtype=np.float16)
 
+    #Source index represent the row's index and destination index represent the column's index
     for sourceIndex in range(distArr.shape[0]):
         for destinationIndex in range(distArr.shape[1]):
 
@@ -15,26 +17,38 @@ def differenceCalculation(sourceArr, destinationArr, medicalSimilarity=0):
                 else:
                     distArr[sourceIndex, destinationIndex] = distArr[sourceIndex, destinationIndex - 1] + 1
                 continue
+            #Initialize first column
             elif destinationIndex == 0:
                 distArr[sourceIndex, destinationIndex] = distArr[sourceIndex - 1, destinationIndex] + 1
                 continue
 
-            canInsert = distArr[sourceIndex, destinationIndex - 1]
-            canDelete = distArr[sourceIndex - 1, destinationIndex]
-            canUpdate = distArr[sourceIndex - 1, destinationIndex - 1]
-            updateValue = 0
+            #Value in left cell
+            prevInsert = distArr[sourceIndex, destinationIndex - 1]
+            #Value in top cell
+            prevDelete = distArr[sourceIndex - 1, destinationIndex]
+            #Value in top-left diagonal cell
+            updateUpdate = distArr[sourceIndex - 1, destinationIndex - 1]
+
+            #Insert and delete cost 1
+            #Calculating the update cost:
             if sourceArr[sourceIndex - 1] != destinationArr[destinationIndex - 1]:
+                #Source and destination nucleotide loaded
                 sourceNode = str(sourceArr[sourceIndex - 1])
                 destinationNode = str(destinationArr[destinationIndex - 1])
+                #Get update value
                 updateValue = updateLogic.updateNode(sourceNode, destinationNode, medicalSimilarity=medicalSimilarity)
-
-            determinedValue = min([canInsert + 1, canDelete + 1, canUpdate + updateValue])
-            distArr[sourceIndex, destinationIndex] = determinedValue
+            else:
+                #If same nucleotide cost = 0
+                updateValue = 0
+            #Get minimum cost
+            minimumCost = min([prevInsert + 1, prevDelete + 1, updateUpdate + updateValue])
+            #Set minimum cost
+            distArr[sourceIndex, destinationIndex] = minimumCost
 
     return distArr
 
 
-# For testing
+# Only for testing
 def prettyPrint(sourceArr, destinationArr, distArr):
     # Printing table
     prettyTable = '\t\t'

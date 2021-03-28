@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import lxml.etree as et
 import xml.etree.cElementTree as parser
 
-
+#Makes the XML more visually easy to read
 def prettyPrint(fileName):
     myFile = fileName
     tree = et.parse(myFile)
@@ -11,8 +11,8 @@ def prettyPrint(fileName):
     file.write(pretty)
     file.close()
 
-
-def differencing(editScripts):
+#Function to format the edit scripts into XML based on our schema
+def editScriptsToXML(editScripts):
     RNADifferencing = ET.Element('RNADifferencing')
     for es in editScripts:
         EditScript = ET.SubElement(RNADifferencing, 'EditScript')
@@ -41,7 +41,7 @@ def differencing(editScripts):
     myFile.close()
     prettyPrint(fileName)
 
-
+#Extract RNA Sequence from XML file
 def sequenceExtraction(fileName):
     tree = ET.parse(fileName)
     sequence = tree.getroot().find('RNA').find('sequence').text.strip()
