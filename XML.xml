@@ -1,22 +1,23 @@
 <RNADifferencing>
   <EditScript>
     <Operation>
-      <OperationType>Delete</OperationType>
-      <Index sourceOrDestination="Source">1</Index>
-      <Index sourceOrDestination="Destination">1</Index>
-      <Nucleotide>U</Nucleotide>
+      <OperationType>Insert</OperationType>
+      <Index sourceOrDestination="Source">4</Index>
+      <Index sourceOrDestination="Destination">4</Index>
+      <Nucleotide>S</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">5</Index>
+      <Index sourceOrDestination="Destination">6</Index>
+      <Nucleotide sourceOrDestination="Source">S</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">N</Nucleotide>
     </Operation>
     <Operation>
       <OperationType>Delete</OperationType>
-      <Index sourceOrDestination="Source">2</Index>
-      <Index sourceOrDestination="Destination">1</Index>
+      <Index sourceOrDestination="Source">6</Index>
+      <Index sourceOrDestination="Destination">7</Index>
       <Nucleotide>A</Nucleotide>
-    </Operation>
-    <Operation>
-      <OperationType>Delete</OperationType>
-      <Index sourceOrDestination="Source">3</Index>
-      <Index sourceOrDestination="Destination">1</Index>
-      <Nucleotide>C</Nucleotide>
     </Operation>
   </EditScript>
 </RNADifferencing>

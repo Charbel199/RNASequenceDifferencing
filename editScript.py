@@ -4,13 +4,12 @@ import utils
 import updateLogic
 
 
-#Getting possible previous nodes from current node
+# Getting possible previous nodes from current node
 def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr, medicalSimilarity=0):
-
-    epsilon = 0.05     #Used since we are working with floating numbers
+    epsilon = 0.05  # Used since we are working with floating numbers
     previousNodes = []
 
-    #Current distance array coordinates and value
+    # Current distance array coordinates and value
     currX = currentNode[0]
     currY = currentNode[1]
     currValue = distArr[currX][currY]
@@ -19,39 +18,39 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr, medic
     if currX == 0 and currY == 0:
         return []
 
-    #Left cell coordinate
+    # Left cell coordinate
     fromInsertX = currX
     fromInsertY = currY - 1
-    #Left cell value
+    # Left cell value
     fromInsertValue = distArr[fromInsertX, fromInsertY]
 
-    #Top cell coordinates
+    # Top cell coordinates
     fromDeleteX = currX - 1
     fromDeleteY = currY
-    #Top cell value
+    # Top cell value
     fromDeleteValue = distArr[fromDeleteX, fromDeleteY]
 
-    #Top-left diagonal cell coordinates
+    # Top-left diagonal cell coordinates
     fromUpdateX = currX - 1
     fromUpdateY = currY - 1
-    #Top-left diagonal cell value
+    # Top-left diagonal cell value
     fromUpdateValue = distArr[fromUpdateX, fromUpdateY]
 
     # If on first row
     if currX == 0:
-        #Only inserts are possible
+        # Only inserts are possible
         previousNodes.append((fromInsertX, fromInsertY, 'Insert'))
     # If on first column
     elif currY == 0:
-        #Only deletes are possible
+        # Only deletes are possible
         previousNodes.append((fromDeleteX, fromDeleteY, 'Delete'))
     else:
         # Check if insert possible
-        if  abs(fromInsertValue - (currValue - 1)) < epsilon:
+        if abs(fromInsertValue - (currValue - 1)) < epsilon:
             previousNodes.append((fromInsertX, fromInsertY, 'Insert'))
 
         # Check if delete possible
-        if  abs(fromDeleteValue - (currValue - 1)) < epsilon:
+        if abs(fromDeleteValue - (currValue - 1)) < epsilon:
             previousNodes.append((fromDeleteX, fromDeleteY, 'Delete'))
 
         # For update
@@ -61,10 +60,10 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr, medic
                 previousNodes.append((fromUpdateX, fromUpdateY, 'Update Free'))
         else:
             # If different node
-            #Get nucleotides
+            # Get nucleotides
             sourceNode = str(sourceArr[currX - 1])
             destinationNode = str(destinationArr[currY - 1])
-            #Get update value
+            # Get update value
             updateValue = updateLogic.updateNode(sourceNode, destinationNode, medicalSimilarity=medicalSimilarity)
             # Check if update possible
             if (abs(fromUpdateValue - (currValue - updateValue)) < epsilon):
@@ -72,24 +71,23 @@ def possiblePreviousNodes(currentNode, distArr, sourceArr, destinationArr, medic
     return previousNodes
 
 
-def getEditScripts(distArr, sourceArr, destinationArr, medicalSimilarity=0, oneEditScript = 0):
-    #Edit scripts as empty array
+def getEditScripts(distArr, sourceArr, destinationArr, medicalSimilarity=0, oneEditScript=0):
+    # Edit scripts as empty array
     editScripts = []
-    #Initialize stack
+    # Initialize stack
     stack = deque()
-    #Specify last node
+    # Specify last node
     lastNode = (distArr.shape[0] - 1, distArr.shape[1] - 1)
-    #Get edit scripts
+    # Get edit scripts
     editScripts = recursivePath(stack, lastNode, distArr, sourceArr, destinationArr, editScripts,
                                 medicalSimilarity=medicalSimilarity, oneEditScript=oneEditScript)
     return editScripts
 
 
-
-
-def recursivePath(stack, currentNode, distArr, sourceArr, destinationArr, editScripts, medicalSimilarity=0, oneEditScript=0):
-    #If we need only one edit script and we've already got it: Stop processing and return
-    if((oneEditScript and len(editScripts) == 1)):
+def recursivePath(stack, currentNode, distArr, sourceArr, destinationArr, editScripts, medicalSimilarity=0,
+                  oneEditScript=0):
+    # If we need only one edit script and we've already got it: Stop processing and return
+    if (oneEditScript and len(editScripts) == 1):
         return editScripts
 
     # Append current node to stack
@@ -100,14 +98,14 @@ def recursivePath(stack, currentNode, distArr, sourceArr, destinationArr, editSc
     # Repeat algorithm for all previous nodes
     for prevNode in prevNodes:
         recursivePath(stack, prevNode, distArr, sourceArr, destinationArr, editScripts,
-                      medicalSimilarity=medicalSimilarity,oneEditScript=oneEditScript)
+                      medicalSimilarity=medicalSimilarity, oneEditScript=oneEditScript)
 
     # If got to this point: No more previous nodes found
     # If the last node we're at is the starting node: Edit Script Done
     if currentNode[0] == 0 and currentNode[1] == 0:
-        script = formatEditSript(list(stack),destinationArr,sourceArr)
+        script = formatEditSript(list(stack), destinationArr, sourceArr)
         editScripts.append(script)
-        if(oneEditScript and len(editScripts) == 1):
+        if (oneEditScript and len(editScripts) == 1):
             return editScripts
 
     # Pop last node and repeat process if stack is not empty
@@ -118,14 +116,14 @@ def recursivePath(stack, currentNode, distArr, sourceArr, destinationArr, editSc
         return editScripts
 
 
-#Formatting script to meaningful tuples which will be stored later in XML files
-def formatEditSript(script,destinationArr,sourceArr):
+# Formatting script to meaningful tuples which will be stored later in XML files
+def formatEditSript(script, destinationArr, sourceArr):
     for i, node in enumerate(script):
-        #First element in script is usually the bottom right final cell, no specific operation in it since it's the final cell
+        # First element in script is usually the bottom right final cell, no specific operation in it since it's the final cell
         if i == 0:
             script[i] = ()
         else:
-            #Format into tuples
+            # Format into tuples
             operation = script[i][2]
             if operation == 'Insert':
                 script[i] = (node[0], node[1], operation, destinationArr[node[1]])
@@ -134,16 +132,16 @@ def formatEditSript(script,destinationArr,sourceArr):
             if operation == 'Update':
                 script[i] = (node[0], node[1], operation, sourceArr[node[0]], destinationArr[node[1]])
             if operation == 'Update Free':
-                #Set empty tuple, meaning no action
+                # Set empty tuple, meaning no action
                 script[i] = ()
-    #Reversing edit script
+    # Reversing edit script
     script.reverse()
-    #Remove empty tuples
+    # Remove empty tuples
     script = remove(script)
     return script
 
 
-#Removes empty tuples
+# Removes empty tuples
 def remove(tuples):
     tuples = [t for t in tuples if t]
     return tuples
