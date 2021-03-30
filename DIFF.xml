@@ -12,11 +12,5 @@
       <Index sourceOrDestination="Destination">1</Index>
       <Nucleotide>A</Nucleotide>
     </Operation>
-    <Operation>
-      <OperationType>Delete</OperationType>
-      <Index sourceOrDestination="Source">3</Index>
-      <Index sourceOrDestination="Destination">1</Index>
-      <Nucleotide>C</Nucleotide>
-    </Operation>
   </EditScript>
 </RNADifferencing>
