@@ -21,4 +21,4 @@ specialNucleotidesRepresentations = {
     'N': ['G', 'U', 'A', 'C']
 }
 
-allPossibleNucleotides = ['R', 'M', 'S', 'V', 'N','G', 'U', 'A', 'C']
+allPossibleNucleotides = ['R', 'M', 'S', 'V', 'N', 'G', 'U', 'A', 'C']

@@ -1,23 +1,93 @@
 <RNADifferencing>
   <EditScript>
     <Operation>
-      <OperationType>Insert</OperationType>
-      <Index sourceOrDestination="Source">4</Index>
-      <Index sourceOrDestination="Destination">4</Index>
-      <Nucleotide>S</Nucleotide>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">43</Index>
+      <Index sourceOrDestination="Destination">43</Index>
+      <Nucleotide sourceOrDestination="Source">G</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">A</Nucleotide>
     </Operation>
     <Operation>
       <OperationType>Update</OperationType>
-      <Index sourceOrDestination="Source">5</Index>
-      <Index sourceOrDestination="Destination">6</Index>
-      <Nucleotide sourceOrDestination="Source">S</Nucleotide>
+      <Index sourceOrDestination="Source">44</Index>
+      <Index sourceOrDestination="Destination">44</Index>
+      <Nucleotide sourceOrDestination="Source">G</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">A</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Insert</OperationType>
+      <Index sourceOrDestination="Source">45</Index>
+      <Index sourceOrDestination="Destination">45</Index>
+      <Nucleotide>A</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">63</Index>
+      <Index sourceOrDestination="Destination">64</Index>
+      <Nucleotide sourceOrDestination="Source">C</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">S</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">74</Index>
+      <Index sourceOrDestination="Destination">75</Index>
+      <Nucleotide sourceOrDestination="Source">A</Nucleotide>
       <Nucleotide sourceOrDestination="Destination">N</Nucleotide>
     </Operation>
     <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">98</Index>
+      <Index sourceOrDestination="Destination">99</Index>
+      <Nucleotide sourceOrDestination="Source">G</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">R</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">117</Index>
+      <Index sourceOrDestination="Destination">118</Index>
+      <Nucleotide sourceOrDestination="Source">C</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">G</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">126</Index>
+      <Index sourceOrDestination="Destination">127</Index>
+      <Nucleotide sourceOrDestination="Source">G</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">U</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">129</Index>
+      <Index sourceOrDestination="Destination">130</Index>
+      <Nucleotide sourceOrDestination="Source">A</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">V</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">130</Index>
+      <Index sourceOrDestination="Destination">131</Index>
+      <Nucleotide sourceOrDestination="Source">A</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">V</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">143</Index>
+      <Index sourceOrDestination="Destination">144</Index>
+      <Nucleotide sourceOrDestination="Source">G</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">U</Nucleotide>
+    </Operation>
+    <Operation>
+      <OperationType>Update</OperationType>
+      <Index sourceOrDestination="Source">166</Index>
+      <Index sourceOrDestination="Destination">167</Index>
+      <Nucleotide sourceOrDestination="Source">C</Nucleotide>
+      <Nucleotide sourceOrDestination="Destination">G</Nucleotide>
+    </Operation>
+    <Operation>
       <OperationType>Delete</OperationType>
-      <Index sourceOrDestination="Source">6</Index>
-      <Index sourceOrDestination="Destination">7</Index>
-      <Nucleotide>A</Nucleotide>
+      <Index sourceOrDestination="Source">206</Index>
+      <Index sourceOrDestination="Destination">207</Index>
+      <Nucleotide>G</Nucleotide>
     </Operation>
   </EditScript>
 </RNADifferencing>

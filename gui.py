@@ -218,14 +218,19 @@ class MyWindow2(Page):
         self.destinationSequence.place(x=250, y=100)
         self.differenceFileLabel.place(x=100, y=150)
         self.differenceFile.place(x=250, y=150)
+        self.button_explore_source = Button(self, text="Browse Files", command=lambda: self.browseFiles(destination=0))
+        self.button_explore_destination = Button(self, text="Browse Files",
+                                                 command=lambda: self.browseFiles(destination=1))
 
         self.patchForward = Button(self, text='Patch Source to Destination', command=self.patchforward)
         self.patchReverse = Button(self, text='Patch Destination to Source', command=self.patchreverse)
-        self.button_explore = Button(self, text="Browse Difference File", command=self.browseFiles)
+        self.button_explore = Button(self, text="Browse Difference File", command=self.browseFileDifference)
 
-        self.patchForward.place(x=670, y=50)
-        self.patchReverse.place(x=670, y=100)
+        self.patchForward.place(x=750, y=50)
+        self.patchReverse.place(x=750, y=100)
         self.button_explore.place(x=670, y=150)
+        self.button_explore_source.place(x=670, y=50)
+        self.button_explore_destination.place(x=670, y=100)
 
     def patchforward(self):
         # Clear destination sequence
@@ -233,7 +238,7 @@ class MyWindow2(Page):
         # Load source sequence and XML file
         src = str(self.sourceSequence.get('0.0', END))[0:-1]
         file = str(self.differenceFile.get('0.0', END))[0:-1]
-        # Perofrming patching and set result in destination
+        # Performing patching and set result in destination
         self.destinationSequence.insert(END, patch.patch(file, src.upper(), 0))
 
     def patchreverse(self):
@@ -242,17 +247,31 @@ class MyWindow2(Page):
         # Load destination sequence and XML file
         dest = str(self.destinationSequence.get('0.0', END))[0:-1]
         file = str(self.differenceFile.get('0.0', END))[0:-1]
-        # Perofrming patching and set result in source
+        # Performing patching and set result in source
         self.sourceSequence.insert(END, patch.patch(file, dest.upper(), 1))
 
     # Browsing file to find Edit script XML
-    def browseFiles(self):
+    def browseFileDifference(self):
         filename = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select a File",
                                               filetypes=(("Text files", "*.xml*"), ("all files", "*.*")))
 
         # Change label contents
         self.differenceFile.delete('1.0', END)
         self.differenceFile.insert(END, filename)
+
+    # Browse file which contains an RNA Sequence
+    def browseFiles(self, destination=0):
+            filename = filedialog.askopenfilename(initialdir=os.getcwd(), title="Select a File",
+                                                  filetypes=(("Text files",
+                                                              "*.xml*"),
+                                                             ("all files",
+                                                              "*.*")))
+            # Retrieve RNA sequence from XML file and set it in GUI
+            sequence = xml.sequenceExtraction(filename)
+            if destination:
+                self.destinationSequence.insert(END, sequence)
+            else:
+                self.sourceSequence.insert(END, sequence)
 
 
 # Managing both pages
