@@ -1,7 +1,8 @@
 from collections import deque
+
 import params
-import utils
 import updateLogic
+import utils
 
 
 # Getting possible previous nodes from current node

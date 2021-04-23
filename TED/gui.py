@@ -1,12 +1,13 @@
-import differencing
 import os
-import editScript as ed
-import XML_Writer as xml
-import patching as patch
-from tkinter import *
 import tkinter as tk
-from tkinter import filedialog
 import tkinter.scrolledtext as scrolledtext
+from tkinter import *
+from tkinter import filedialog
+
+import XML_Writer as xml
+import differencing
+import editScript as ed
+import patching as patch
 
 
 # Managing GUI
