@@ -290,15 +290,15 @@ def test():
 
 
 
-def IR_Method():
+def IR_Method(tokenizationFunction,result):
     from data import parser
     RNA_sequences = parser.parse_fa('humanRNA.fa')
     #print(RNA_sequences[0:10])
     input_sequence = "AGGAGGAGGA"
-    input_vector = sequence_to_vector_edge(input_sequence)
+    input_vector = tokenizationFunction(input_sequence)
     similarities = {}
     for sequence in RNA_sequences:
-        vector = sequence_to_vector_edge(sequence)
+        vector = tokenizationFunction(sequence)
         sim = vector_cosine_measure(input_vector,vector)
         similarities[sequence] = sim
 
@@ -325,6 +325,26 @@ def IR_Method():
     for i in res:
         print(i, " :", res[i], " ")
 
+    result.append(high)
+
+
 
 #test()
-IR_Method()
+import threading
+result = []
+#IR_Method(sequence_to_vector_edge)
+x = threading.Thread(target=IR_Method, args=(sequence_to_vector_edge,result))
+x.start()
+y = threading.Thread(target=IR_Method, args=(sequence_to_vector_allpaths,result))
+y.start()
+
+x.join()
+y.join()
+
+
+print("\n\n")
+for res in result:
+    for i in res:
+        print(i[0], " :", i[1], " ")
+    print("\n\n")
+
