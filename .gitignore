@@ -206,3 +206,5 @@ fabric.properties
 *.wav
 # *.iml
 # modules.xml
+
+*.fa

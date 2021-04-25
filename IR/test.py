@@ -21,7 +21,7 @@ def sequence_to_vector_tag(sequence):
                 vector[nucleotide] +=1
             except:
                 vector[nucleotide] = 1
-    print(vector)
+    #print(vector)
     return vector
 
 def sequence_to_vector_edge(sequence):
@@ -52,7 +52,7 @@ def sequence_to_vector_edge(sequence):
             except:
                 edges[edge] = 1
 
-    print(edges)
+    #print(edges)
     return edges
 
 def sequence_to_vector_allpaths(sequence,maximumPathLength = 5):
@@ -94,8 +94,11 @@ def sequence_to_vector_allpaths(sequence,maximumPathLength = 5):
                 except:
                     paths[path] = 1
 
-    print(paths)
+   # print(paths)
     return paths
+
+
+
 
 
 def vector_cosine_measure(vector1,vector2):
@@ -181,7 +184,7 @@ def multiset_jackard_measure(set1,set2):
         try:
             element = set2[key]
         except:
-            vector2[key] = 0
+            set2[key] = 0
     for key in list(set2.keys()):
         try:
             element = set1[key]
@@ -191,7 +194,7 @@ def multiset_jackard_measure(set1,set2):
     numerator = 0
     sumA = 0
     sumB = 0
-    for key in list(vector2.keys()):
+    for key in list(set1.keys()):
         numerator += min(set1[key] , set2[key])
         sumA += set1[key]
         sumB += set2[key]
@@ -210,7 +213,7 @@ def multiset_dice_measure(set1,set2):
         try:
             element = set2[key]
         except:
-            vector2[key] = 0
+            set2[key] = 0
     for key in list(set2.keys()):
         try:
             element = set1[key]
@@ -220,7 +223,7 @@ def multiset_dice_measure(set1,set2):
     numerator = 0
     sumA = 0
     sumB = 0
-    for key in list(vector2.keys()):
+    for key in list(set2.keys()):
         numerator += min(set1[key] , set2[key])
         sumA += set1[key]
         sumB += set2[key]
@@ -238,44 +241,90 @@ def multiset_dice_measure(set1,set2):
 
 
 
+def test():
+
+    sequence3="ACAAGAUGCCAUUGUCCCCCGGCCUCCUGCUGCUGCUGCUCUCAAAGGCCACGGCCACCGCUGCSCUGCCCCUGGNGGGUGGCCCCACCGGCCGAGACARCGAGCAUACAGGAAGCGGGAGGAAUAAUGAVVAGCAGCCUGCAGUAACUUCUUCUGGAAGACCUUCUGCUCCUGCAAAUAAAACCUCACCCAUGAAUGCUCACGCAA"
+
+    import time
+
+    start = time.time()
+    sequence_to_vector_allpaths(sequence3)
+    end = time.time()
+    print('All paths long sequence time: ',(end - start))
 
 
-sequence3="ACAAGAUGCCAUUGUCCCCCGGCCUCCUGCUGCUGCUGCUCUCAAAGGCCACGGCCACCGCUGCSCUGCCCCUGGNGGGUGGCCCCACCGGCCGAGACARCGAGCAUACAGGAAGCGGGAGGAAUAAUGAVVAGCAGCCUGCAGUAACUUCUUCUGGAAGACCUUCUGCUCCUGCAAAUAAAACCUCACCCAUGAAUGCUCACGCAA"
 
-import time
-
-start = time.time()
-#sequence_to_vector_allpaths(sequence3)
-end = time.time()
-print(end - start)
+    start = time.time()
+    sequence_to_vector_edge(sequence3)
+    end = time.time()
+    print('Edge long sequence time: ',(end - start))
 
 
+    sequence1 = "GUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAAGUACNAGUACNAGUAUAGUAAA"
+    sequence2 = "AG"
 
-start = time.time()
-#sequence_to_vector_edge(sequence3)
-end = time.time()
-print(end - start)
-
-
-sequence1 = "NNNNN"
-sequence2 = "AG"
-
-vector1 = sequence_to_vector_allpaths(sequence1)
-vector2 = sequence_to_vector_allpaths(sequence2)
+    vector1 = sequence_to_vector_allpaths(sequence1)
+    vector2 = sequence_to_vector_allpaths(sequence2)
+    vector3 = sequence_to_vector_allpaths(sequence3)
 
 
-similarity = vector_cosine_measure(vector1,vector2)
+    start = time.time()
+    similarity = vector_cosine_measure(vector3,vector1)
+    end = time.time()
+    print('Cosine sequence time: ',(end - start))
 
-print('Cosine: ',similarity)
 
-similarity2  = vector_pearsoncorrelation_measure(vector1,vector2)
+    print('Cosine: ',similarity)
 
-print('Pearson: ',similarity2)
+    similarity2  = vector_pearsoncorrelation_measure(vector1,vector2)
 
-similarity3  = multiset_jackard_measure(vector1,vector2)
+    print('Pearson: ',similarity2)
 
-print('Jackard: ',similarity3)
+    similarity3  = multiset_jackard_measure(vector1,vector2)
 
-similarity4  = multiset_dice_measure(vector1,vector2)
+    print('Jackard: ',similarity3)
 
-print('Dice: ',similarity4)
+    similarity4  = multiset_dice_measure(vector1,vector2)
+
+    print('Dice: ',similarity4)
+
+
+
+def IR_Method():
+    from data import parser
+    RNA_sequences = parser.parse_fa('humanRNA.fa')
+    #print(RNA_sequences[0:10])
+    input_sequence = "AGGAGGAGGA"
+    input_vector = sequence_to_vector_edge(input_sequence)
+    similarities = {}
+    for sequence in RNA_sequences:
+        vector = sequence_to_vector_edge(sequence)
+        sim = vector_cosine_measure(input_vector,vector)
+        similarities[sequence] = sim
+
+    K = 3
+    from collections import Counter
+    k = Counter(similarities)
+
+    # Finding 3 highest values
+    high = k.most_common(K)
+
+
+    print(K," highest values:")
+
+
+    for i in high:
+        print(i[0], " :", i[1], " ")
+
+    from operator import itemgetter
+
+    res = dict(sorted(similarities.items(), key=itemgetter(1))[:K])
+
+    # printing result
+    print(K," lowest values:")
+    for i in res:
+        print(i, " :", res[i], " ")
+
+
+#test()
+IR_Method()
