@@ -33,59 +33,64 @@ class MyWindow1(Page):
         self.secondSequenceLabel.place(x=100, y=100)
         self.secondSequence.place(x=200, y=100)
 
-        self.computeSimilaritiesButton = Button(self, text='Compute Similarities', command=self.computeSimilarities)
-        self.computeSimilaritiesButton.place(x=100, y=150)
+
+
+
+        self.computeSimilaritiesButton = Button(self, text='Compute All Similarities', command=self.computeSimilarities)
+        self.computeSimilaritiesButton.place(x=100, y=380)
 
         self.tokenizationMethod = StringVar(self)
         self.tokenizationMethod.set("Tag-based")  # default value
+        self.tokenizationMethodOptions = OptionMenu(self,  self.tokenizationMethod, "Tag-based", "Edge-based", "All Paths").place(x=250,y=378)
 
-        self.tokenizationMethodOptions = OptionMenu(self,  self.tokenizationMethod, "Tag-based", "Edge-based", "All Paths").place(x=250,y=148)
+        self.plotRadarsButton = Button(self, text='Graph', command=self.plotRadar)
+        self.plotRadarsButton.place(x=380, y=380)
 
         self.similairtyLabel =  Label(self, text='Similarity')
         self.timeLabel = Label(self, text='Time (s)')
-        self.similairtyLabel.place(x=750, y=20)
-        self.timeLabel.place(x=870, y=20)
+        self.similairtyLabel.place(x=200, y=420)
+        self.timeLabel.place(x=320, y=420)
 
         self.TEDLabel = Label(self, text='TED: ')
         self.TED = Text(self, bd=1, width=10, height=1)
         self.TEDTime = Text(self, bd=1, width=10, height=1)
-        self.TEDLabel.place(x=650, y=50)
-        self.TED.place(x=750, y=50)
-        self.TEDTime.place(x=870, y=50)
+        self.TEDLabel.place(x=100, y=450)
+        self.TED.place(x=200, y=450)
+        self.TEDTime.place(x=320, y=450)
 
         self.VectorBasedLabel = Label(self, text='Vector based: ')
-        self.VectorBasedLabel.place(x=750, y=80)
+        self.VectorBasedLabel.place(x=200, y=480)
 
         self.CosineLabel = Label(self, text='Cosine measure: ')
         self.Cosine = Text(self, bd=1, width=10, height=1)
         self.CosineTime = Text(self, bd=1, width=10, height=1)
-        self.CosineLabel.place(x=650, y=110)
-        self.Cosine.place(x=750, y=110)
-        self.CosineTime.place(x=870, y=110)
+        self.CosineLabel.place(x=100, y=510)
+        self.Cosine.place(x=200, y=510)
+        self.CosineTime.place(x=320, y=510)
 
         self.PearsonLabel = Label(self, text='Pearson measure: ')
         self.Pearson = Text(self, bd=1, width=10, height=1)
         self.PearsonTime = Text(self, bd=1, width=10, height=1)
-        self.PearsonLabel.place(x=650, y=140)
-        self.Pearson.place(x=750, y=140)
-        self.PearsonTime.place(x=870, y=140)
+        self.PearsonLabel.place(x=100, y=540)
+        self.Pearson.place(x=200, y=540)
+        self.PearsonTime.place(x=320, y=540)
 
         self.setBasedLabel = Label(self, text='Set based: ')
-        self.setBasedLabel.place(x=750, y=170)
+        self.setBasedLabel.place(x=200, y=570)
 
         self.JaccardLabel = Label(self, text='Jaccard measure: ')
         self.Jaccard = Text(self, bd=1, width=10, height=1)
         self.JaccardTime = Text(self, bd=1, width=10, height=1)
-        self.JaccardLabel.place(x=650, y=200)
-        self.Jaccard.place(x=750, y=200)
-        self.JaccardTime.place(x=870, y=200)
+        self.JaccardLabel.place(x=100, y=600)
+        self.Jaccard.place(x=200, y=600)
+        self.JaccardTime.place(x=320, y=600)
 
         self.DiceLabel = Label(self, text='Dice measure: ')
         self.Dice = Text(self, bd=1, width=10, height=1)
         self.DiceTime = Text(self, bd=1, width=10, height=1)
-        self.DiceLabel.place(x=650, y=230)
-        self.Dice.place(x=750, y=230)
-        self.DiceTime.place(x=870, y=230)
+        self.DiceLabel.place(x=100, y=630)
+        self.Dice.place(x=200, y=630)
+        self.DiceTime.place(x=320, y=630)
 
     def computeSimilarities(self):
         self.TED.delete('1.0', END)
@@ -126,6 +131,53 @@ class MyWindow1(Page):
         self.DiceTime.insert(END, times[4])
 
 
+
+    def plotRadar(self):
+
+        from math import pi
+        figure = plt.Figure(figsize=(3, 3), dpi=100)
+        figure.patch.set_facecolor('#F0F0F0')
+        ax = figure.add_subplot(111 ,polar=True)
+        categories = ["TED", "Cosine", "Pearson", "Jaccard", "Dice"]
+
+        # We are going to plot the first line of the data frame.
+        # But we need to repeat the first value to close the circular graph:
+        values = []
+        values.append(float(self.TED.get("1.0",'end-1c')))
+        values.append(float(self.Cosine.get("1.0",'end-1c')))
+        values.append(float(self.Pearson.get("1.0",'end-1c')))
+        values.append(float(self.Jaccard.get("1.0",'end-1c')))
+        values.append(float(self.Dice.get("1.0",'end-1c')))
+        N = len(values)
+        values += values[:1]
+        # What will be the angle of each axis in the plot? (we divide the plot / number of variable)
+        angles = [n / float(N) * 2 * pi for n in range(N)]
+        angles += angles[:1]
+        # Draw one axe per variable + add labels
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(categories)
+        # Draw ylabels
+        ax.set_rlabel_position(0)
+        ax.set_yticks([-1, -0.5, 0, 0.5, 1])
+        ax.set_yticklabels(["-1", "-0.5", "0", "0.5", "1"], color="red", size=7)
+        ax.set_ylim(-1, 1)
+
+        # Plot data
+        ax.plot(angles, values, linewidth=1, linestyle='solid')
+
+        # Fill area
+        ax.fill(angles, values, 'b', alpha=0.1)
+
+        global chart_type
+        chart_type = FigureCanvasTkAgg(figure, root)
+        chart_type.get_tk_widget().place(x=500, y=390)
+
+
+
+
+
+
+
 # Setting the GUI for page 2
 class MyWindow2(Page):
     # GUI Components
@@ -149,7 +201,7 @@ class MainView(tk.Frame):
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
         b1 = tk.Button(buttonframe, text="Similarity Comparison", command=p1.lift)
-        b2 = tk.Button(buttonframe, text="Search", command=p2.lift)
+        b2 = tk.Button(buttonframe, text="Search", command=lambda:[p2.lift(),chart_type.get_tk_widget().place_forget()])
 
         b1.pack(side="left")
         b2.pack(side="left")
