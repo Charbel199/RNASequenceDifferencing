@@ -216,6 +216,8 @@ def compute_all_similarities(sourceArr,destinationArr,tokenizationMethod):
     start = time.time()
     similarity = vector_pearsoncorrelation_measure(elements1,elements2)
     end = time.time()
+    if(similarity<-0.99):
+        similarity=-1
     similarities.append(similarity)
     times.append(end - start)
 

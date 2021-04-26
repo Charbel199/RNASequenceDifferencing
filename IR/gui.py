@@ -33,7 +33,30 @@ class MyWindow1(Page):
         self.secondSequenceLabel.place(x=100, y=100)
         self.secondSequence.place(x=200, y=100)
 
+        self.technique = StringVar(self)
+        self.technique.set("TED")  # default value
+        self.techniqueOptions = OptionMenu(self, self.technique, "TED", "Multiset/vector-based").place(x=100, y=140)
+        self.tokenizationSingleMethod = StringVar(self)
+        self.tokenizationSingleMethod.set("Tag-based")  # default value
+        self.tokenizationSingleMethodOptions = OptionMenu(self, self.tokenizationSingleMethod, "Tag-based", "Edge-based",
+                                                    "All Paths").place(x=100, y=180)
+        self.similarityMethod = StringVar(self)
+        self.similarityMethod.set("ED")  # default value
+        self.similarityMethodOptions = OptionMenu(self, self.similarityMethod, "ED", "Jaccard",
+                                                    "Dice","Cosine","Pearson").place(x=100, y=220)
+        self.computeSingleSimilaritiyButton = Button(self, text='Compute similarity', command=self.computeSingleSimilarity)
+        self.computeSingleSimilaritiyButton.place(x=450, y=140)
 
+        self.similairtySingleLabel = Label(self, text='Similarity')
+        self.timeSingleLabel = Label(self, text='Time (s)')
+        self.similairtySingleLabel.place(x=450, y=180)
+        self.timeSingleLabel.place(x=570, y=180)
+
+
+        self.singleMethod = Text(self, bd=1, width=10, height=1)
+        self.singleMethodTime = Text(self, bd=1, width=10, height=1)
+        self.singleMethod.place(x=450, y=210)
+        self.singleMethodTime.place(x=570, y=210)
 
 
         self.computeSimilaritiesButton = Button(self, text='Compute All Similarities', command=self.computeSimilarities)
@@ -135,7 +158,7 @@ class MyWindow1(Page):
     def plotRadar(self):
 
         from math import pi
-        figure = plt.Figure(figsize=(3, 3), dpi=100)
+        figure = plt.Figure(figsize=(3.2, 3), dpi=100)
         figure.patch.set_facecolor('#F0F0F0')
         ax = figure.add_subplot(111 ,polar=True)
         categories = ["TED", "Cosine", "Pearson", "Jaccard", "Dice"]
@@ -173,7 +196,8 @@ class MyWindow1(Page):
         chart_type.get_tk_widget().place(x=500, y=390)
 
 
-
+    def computeSingleSimilarity(self):
+        pass
 
 
 
