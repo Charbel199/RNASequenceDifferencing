@@ -262,6 +262,10 @@ class MyWindow2(Page):
         self.numberOfSequencesToLookInLabel.place(x=630,y=28)
         self.numberOfSequencesToLookIn.place(x=710,y=50)
 
+        self.numberOfOutputsLabel = Label(self, text='Number of outputs:')
+        self.numberOfOutputs = Text(self, bd=3, width=10, height=1)
+        self.numberOfOutputsLabel.place(x=650, y=78)
+        self.numberOfOutputs.place(x=710, y=100)
 
         #options
         self.technique = StringVar(self)
@@ -303,7 +307,7 @@ class MyWindow2(Page):
         # Vertical (y) Scroll Bar
         self.yscrollbar2 = Scrollbar(self.searchResultsContainer)
         self.yscrollbar2.pack(side=RIGHT, fill=Y)
-        self.searchResults = Text(self.searchResultsContainer, width=50, height=10, wrap="none",
+        self.searchResults = Text(self.searchResultsContainer, width=60, height=10, wrap="none",
                                      xscrollcommand=self.xscrollbar2.set,
                                      yscrollcommand=self.yscrollbar2.set)
         self.searchResults.pack()
@@ -311,8 +315,10 @@ class MyWindow2(Page):
         self.yscrollbar2.config(command=self.searchResults.yview)
         self.searchResultsContainer.place(x=200, y=200)
 
-
-
+        self.singleSearchTimeLabel = Label(self, text='Time elapsed:')
+        self.singleSearchTime = Text(self, bd=3, width=10, height=1)
+        self.singleSearchTimeLabel.place(x=710, y=200)
+        self.singleSearchTime.place(x=710, y=230)
 
 
 
@@ -348,6 +354,7 @@ class MyWindow2(Page):
 
     def searchSimilarSequence(self):
         self.searchResults.delete('1.0', 'end')
+        self.singleSearchTime.delete('1.0', 'end')
         global sequences
         results = []
         times = []
@@ -382,6 +389,11 @@ class MyWindow2(Page):
         except:
             numberOfSequences = 100
 
+        try:
+            numberOfOutputs = int(self.numberOfOutputs.get('0.0', END))
+        except:
+            numberOfOutputs = 3
+
         searchSimilarSequences.IR_Method(sequences,
                                          self.sequence.get('0.0', END),
                                          results,
@@ -389,15 +401,24 @@ class MyWindow2(Page):
                                          tokenizationMethod,
                                          similarityChosenMethod,
                                          processed_sequences_database = [],
-                                         numberOfOutputs = 3,
+                                         numberOfOutputs = numberOfOutputs,
                                          numberOfSequencesToSearch= numberOfSequences)
-        print(results)
-        for result in results:
-            self.searchResults.insert(END, result)
-            self.searchResults.insert(END, "\n")
-        for time in times:
-            self.searchResults.insert(END, time)
-            self.searchResults.insert(END, "\n")
+
+        for i,resultDict in enumerate(results):
+            if(i == 0):
+                self.searchResults.insert(END, "Top " +str(numberOfOutputs)+ " results:")
+                self.searchResults.insert(END, "\n")
+            else:
+                self.searchResults.insert(END, "\nLowest " +str(numberOfOutputs)+ " results:")
+                self.searchResults.insert(END, "\n")
+
+            for key in resultDict:
+                self.searchResults.insert(END, key)
+                self.searchResults.insert(END, " : ")
+                self.searchResults.insert(END, resultDict[key])
+                self.searchResults.insert(END, "\n")
+
+        self.singleSearchTime.insert(END, times[0])
     def initializeDatabase(self):
         self.sequenceDatabase.delete('1.0', 'end')
         global sequences

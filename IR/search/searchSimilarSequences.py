@@ -39,6 +39,10 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
     low = dict(sorted(similarities.items(), key=itemgetter(1))[:numberOfOutputs])
 
 
-    result.append(high)
+    highDict = {}
+    for h in high:
+        highDict[h[0]]=h[1]
+
+    result.append(highDict)
     result.append(low)
     times.append(end - start)
