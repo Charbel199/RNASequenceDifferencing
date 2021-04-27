@@ -35,15 +35,16 @@ class MyWindow1(Page):
 
         self.technique = StringVar(self)
         self.technique.set("TED")  # default value
-        self.techniqueOptions = OptionMenu(self, self.technique, "TED", "Multiset/vector-based").place(x=100, y=140)
+        self.techniqueOptions = OptionMenu(self, self.technique, "TED", "Multiset/vector-based").place(x=250, y=140)
         self.tokenizationSingleMethod = StringVar(self)
         self.tokenizationSingleMethod.set("Tag-based")  # default value
         self.tokenizationSingleMethodOptions = OptionMenu(self, self.tokenizationSingleMethod, "Tag-based", "Edge-based",
-                                                    "All Paths").place(x=100, y=180)
+                                                    "All Paths").place(x=250, y=180)
         self.similarityMethod = StringVar(self)
         self.similarityMethod.set("ED")  # default value
+
         self.similarityMethodOptions = OptionMenu(self, self.similarityMethod, "ED", "Jaccard",
-                                                    "Dice","Cosine","Pearson").place(x=100, y=220)
+                                                    "Dice","Cosine","Pearson").place(x=250, y=220)
         self.computeSingleSimilaritiyButton = Button(self, text='Compute similarity', command=self.computeSingleSimilarity)
         self.computeSingleSimilaritiyButton.place(x=450, y=140)
 
@@ -197,7 +198,46 @@ class MyWindow1(Page):
 
 
     def computeSingleSimilarity(self):
-        pass
+        self.singleMethod.delete('1.0', END)
+        self.singleMethodTime.delete('1.0', END)
+
+        sourceArr = str(self.firstSequence.get('0.0', END))[0:-1]
+        destinationArr = str(self.secondSequence.get('0.0', END))[0:-1]
+        technique = self.technique.get()
+        tokenizationMethod = self.tokenizationSingleMethod.get()
+        similarityChosenMethod = self.similarityMethod.get()
+
+
+
+        if(tokenizationMethod == "Tag-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_tag
+        elif(tokenizationMethod == "Edge-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_edge
+        else:
+            tokenizationMethod = tokenization.sequence_to_vector_allpaths
+
+
+        if (similarityChosenMethod ==  "ED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.technique.set("TED")
+        elif (similarityChosenMethod ==  "Jaccard"):
+            similarityChosenMethod = similarity.multiset_jackard_measure
+        elif(similarityChosenMethod ==  "Dice"):
+            similarityChosenMethod = similarity.multiset_dice_measure
+        elif(similarityChosenMethod ==  "Cosine"):
+            similarityChosenMethod = similarity.vector_cosine_measure
+        else:
+            similarityChosenMethod = similarity.vector_pearsoncorrelation_measure
+
+        if (technique == "TED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.similarityMethod.set("ED")
+
+        similarityMeasure, timeMeasure = similarity.compute_one_similarity(sourceArr,destinationArr,tokenizationMethod,similarityChosenMethod)
+        self.singleMethod.insert(END, similarityMeasure)
+        self.singleMethodTime.insert(END, timeMeasure)
+
+
 
 
 

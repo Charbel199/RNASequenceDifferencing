@@ -99,15 +99,16 @@ def vector_pearsoncorrelation_measure(vector1,vector2):
     for key in list(vector1.keys()):
         try:
             element = vector2[key]
-            sumB += element
         except:
             vector2[key] = 0
     for key in list(vector2.keys()):
         try:
             element = vector1[key]
-            sumA += element
         except:
             vector1[key] = 0
+    for key in list(vector1.keys()):
+        sumB += vector2[key]
+        sumA += vector1[key]
 
     averageA = sumA / len(vector1)
     averageB = sumB / len(vector2)
@@ -216,8 +217,7 @@ def compute_all_similarities(sourceArr,destinationArr,tokenizationMethod):
     start = time.time()
     similarity = vector_pearsoncorrelation_measure(elements1,elements2)
     end = time.time()
-    if(similarity<-0.99):
-        similarity=-1
+
     similarities.append(similarity)
     times.append(end - start)
 
@@ -235,3 +235,18 @@ def compute_all_similarities(sourceArr,destinationArr,tokenizationMethod):
 
 
     return similarities,times
+
+def compute_one_similarity(sourceArr,destinationArr,tokenizationMethod,similarityMethod):
+    elements1 = tokenizationMethod(sourceArr)
+    elements2 = tokenizationMethod(destinationArr)
+    start = time.time()
+
+    if(similarityMethod == TEDSimilarity_measure):
+        similarity = TEDSimilarity_measure(sourceArr, destinationArr)
+    else:
+        similarity = similarityMethod(elements1,elements2)
+    end = time.time()
+
+    timeElapsed = end - start
+
+    return similarity,timeElapsed
