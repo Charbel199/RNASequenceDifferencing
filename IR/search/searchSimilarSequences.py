@@ -20,9 +20,12 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
     else:
         sequencesDatabase = sequencesDatabase[0:numberOfSequencesToSearch]
         start = time.time()
-        if(not processed_sequences_database):
-            processed_sequences_database = map(tokenizationMethod, sequencesDatabase)
-
+        if(len(processed_sequences_database) == 0):
+            print("PREPROCESSING")
+            processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
+        if(len(processed_sequences_database) != len(sequencesDatabase)):
+            print("PREPROCESSING")
+            processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
         similarities = {}
         processedInputSequence = tokenizationMethod(inputSequence)
         for i,sequence in enumerate(processed_sequences_database):

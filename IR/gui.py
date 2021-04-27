@@ -273,6 +273,7 @@ class MyWindow2(Page):
         self.techniqueOptions = OptionMenu(self, self.technique, "TED", "Multiset/vector-based").place(x=200, y=80)
 
         self.preprocessButton = Button(self, text="Preprocess Database", command=self.preprocessDatabase).place(x=60, y=120)
+        self.deletePreprocessButton = Button(self, text="Delete preprocessed Database", command=self.deletePreprocessDatabase).place(x=25, y=150)
         self.tokenizationSingleMethod = StringVar(self)
         self.tokenizationSingleMethod.set("Tag-based")  # default value
         self.tokenizationSingleMethodOptions = OptionMenu(self, self.tokenizationSingleMethod, "Tag-based",
@@ -320,6 +321,8 @@ class MyWindow2(Page):
         self.singleSearchTimeLabel.place(x=710, y=200)
         self.singleSearchTime.place(x=710, y=230)
 
+        self.wasItPreprocessedLabel = Label(self, text=' ')
+        self.wasItPreprocessedLabel.place(x=700, y=255)
 
 
 
@@ -343,12 +346,12 @@ class MyWindow2(Page):
         self.sequenceDatabaseContainer.place(x=850, y=50)
         self.numberOfSequencesToShowLabel = Label(self, text='Show:')
         self.numberOfSequencesToShow = Text(self, bd=3, width=10, height=1)
-        self.numberOfSequencesToShowLabel.place(x=850, y=250)
+        self.numberOfSequencesToShowLabel.place(x=855, y=250)
         self.numberOfSequencesToShow.place(x=900, y=250)
         self.fileNameLabel = Label(self, text='File:')
         self.fileName = Text(self, bd=3, width=20, height=1)
         self.fileName.insert('0.0',"humanRNA.fa")
-        self.fileNameLabel.place(x=850, y=290)
+        self.fileNameLabel.place(x=855, y=290)
         self.fileName.place(x=900, y=290)
         self.initializeDatabaseButton = Button(self, text="Initialize Database", command=self.initializeDatabase).place(x=1000, y=250)
 
@@ -393,14 +396,29 @@ class MyWindow2(Page):
             numberOfOutputs = int(self.numberOfOutputs.get('0.0', END))
         except:
             numberOfOutputs = 3
-
+        
+        global processed_sequences_database
+        if("processed_sequences_database" not in globals()):
+            processed_sequences_database = []
+            if (technique == "TED" or similarityChosenMethod == "ED"):
+                self.wasItPreprocessedLabel.config(text="No preprocessing")
+            else:
+                self.wasItPreprocessedLabel.config(text="Preprocessing Included")
+        else:
+            if (technique == "TED" or similarityChosenMethod == "ED"):
+                self.wasItPreprocessedLabel.config(text="No preprocessing")
+            else:
+                if(len(processed_sequences_database) != numberOfSequences):
+                    self.wasItPreprocessedLabel.config(text = "Preprocessing Included")
+                else:
+                    self.wasItPreprocessedLabel.config(text="Preprocessing NOT Included")
         searchSimilarSequences.IR_Method(sequences,
                                          self.sequence.get('0.0', END),
                                          results,
                                          times,
                                          tokenizationMethod,
                                          similarityChosenMethod,
-                                         processed_sequences_database = [],
+                                         processed_sequences_database = processed_sequences_database,
                                          numberOfOutputs = numberOfOutputs,
                                          numberOfSequencesToSearch= numberOfSequences)
 
@@ -439,7 +457,27 @@ class MyWindow2(Page):
             self.sequenceDatabase.insert(END, "\n")
 
     def preprocessDatabase(self):
-        pass
+        global processed_sequences_database
+        global sequences
+        processed_sequences_database = []
+        try:
+            numberOfSequences = int(self.numberOfSequencesToLookIn.get('0.0', END))
+        except:
+            numberOfSequences = 100
+        sequencesDatabase = sequences[0:numberOfSequences]
+
+        tokenizationMethod = self.tokenizationSingleMethod.get()
+        if (tokenizationMethod == "Tag-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_tag
+        elif (tokenizationMethod == "Edge-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_edge
+        else:
+            tokenizationMethod = tokenization.sequence_to_vector_allpaths
+        if (not processed_sequences_database):
+            processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
+    def deletePreprocessDatabase(self):
+        global processed_sequences_database
+        processed_sequences_database = []
 # Managing both pages
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
