@@ -5,6 +5,7 @@ import tkinter.scrolledtext as scrolledtext
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from similarityMeasures import similarity,tokenization
+from data import parser
 from os import sys, path
 sys.path.append(path.dirname(__file__))
 
@@ -247,6 +248,61 @@ class MyWindow2(Page):
     # GUI Components
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
+        self.sequenceLabel = Label(self, text='Sequence')
+        self.sequence = Text(self, bd=3, width=50, height=1)
+        self.sequenceLabel.place(x=100, y=50)
+        self.sequence.place(x=200, y=50)
+
+        self.searchButton = Button(self, text="Search",command=self.searchSimilarSequence).place(x=650,y=48)
+
+
+        ##Databse of sequences
+        self.sequenceDatabaseContainer = tk.Frame(self, bd=1, width=50, height=10, relief="sunken")
+        # Horizontal (x) Scroll bar
+        self.xscrollbar = Scrollbar(self.sequenceDatabaseContainer, orient=HORIZONTAL)
+        self.xscrollbar.pack(side=BOTTOM, fill=X)
+        # Vertical (y) Scroll Bar
+        self.yscrollbar = Scrollbar(self.sequenceDatabaseContainer)
+        self.yscrollbar.pack(side=RIGHT, fill=Y)
+        self.sequenceDatabase = Text(self.sequenceDatabaseContainer, width=50, height=10, wrap="none",
+                               xscrollcommand=self.xscrollbar.set,
+                               yscrollcommand=self.yscrollbar.set)
+        self.sequenceDatabase.pack()
+        self.xscrollbar.config(command=self.sequenceDatabase.xview)
+        self.yscrollbar.config(command=self.sequenceDatabase.yview)
+        self.sequenceDatabaseContainer.place(x=750, y=50)
+
+        self.numberOfSequencesToShowLabel = Label(self, text='Show:')
+        self.numberOfSequencesToShow = Text(self, bd=3, width=10, height=1)
+        self.numberOfSequencesToShowLabel.place(x=750, y=250)
+        self.numberOfSequencesToShow.place(x=800, y=250)
+        self.fileNameLabel = Label(self, text='File:')
+        self.fileName = Text(self, bd=3, width=20, height=1)
+        self.fileName.insert('0.0',"humanRNA.fa")
+        self.fileNameLabel.place(x=750, y=290)
+        self.fileName.place(x=800, y=290)
+        self.initializeDatabaseButton = Button(self, text="Initialize Db", command=self.initializeDatabase).place(x=900, y=250)
+
+    def searchSimilarSequence(self):
+        pass
+
+    def initializeDatabase(self):
+        self.sequenceDatabase.delete('1.0', 'end')
+        try:
+            equences = parser.parse_fa(self.fileName.get('0.0', END))
+        except:
+            sequences = parser.parse_fa('humanRNA.fa')
+            self.fileName.delete('1.0', 'end')
+            self.fileName.insert('0.0', "humanRNA.fa")
+        try:
+            sequences = sequences[0:int(self.numberOfSequencesToShow.get('0.0', END))]
+        except:
+            sequences = []
+
+
+        for sequence in sequences:
+            self.sequenceDatabase.insert(END, sequence)
+            self.sequenceDatabase.insert(END, "\n")
 
 
 # Managing both pages
