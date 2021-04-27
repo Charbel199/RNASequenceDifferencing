@@ -1,6 +1,7 @@
 from similarityMeasures import similarity
 import time
-def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 0):
+from search import TFIDF
+def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,TF_method,IDF_method,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 0,TF = 1,IDF = 0):
     if(numberOfSequencesToSearch == 0):
         numberOfSequencesToSearch = len(sequencesDatabase)
     if(similarityMethod == similarity.TEDSimilarity_measure ):
@@ -23,9 +24,22 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
         if(len(processed_sequences_database) == 0):
             print("PREPROCESSING")
             processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
+
+            processed = []
+            for elements in processed_sequences_database:
+                processed.append(TFIDF.updateWeights(elements,processed_sequences_database,TF_method,IDF_method,TF = TF,IDF = IDF))
+            processed_sequences_database = processed
+
         if(len(processed_sequences_database) != len(sequencesDatabase)):
             print("PREPROCESSING")
             processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
+            processed = []
+            for elements in processed_sequences_database:
+                processed.append(
+                    TFIDF.updateWeights(elements, processed_sequences_database, TF_method, IDF_method, TF=TF,
+                                               IDF=IDF))
+            processed_sequences_database = processed
+
         similarities = {}
         processedInputSequence = tokenizationMethod(inputSequence)
         for i,sequence in enumerate(processed_sequences_database):

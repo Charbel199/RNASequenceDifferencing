@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from similarityMeasures import similarity,tokenization
 from data import parser
-from search import searchSimilarSequences
+from search import searchSimilarSequences, TFIDF
 from os import sys, path
 sys.path.append(path.dirname(__file__))
 
@@ -284,9 +284,9 @@ class MyWindow2(Page):
 
         self.similarityMethodOptions = OptionMenu(self, self.similarityMethod, "ED", "Jaccard",
                                                   "Dice", "Cosine", "Pearson").place(x=200, y=160)
-        self.termIndexing = StringVar(self)
-        self.termIndexing.set("TF")  # default value
-        self.termIndexingOptions = OptionMenu(self, self.termIndexing, "TF", "IDF", "TF-IDF").place(x=500, y=80)
+        self.TFIDF = StringVar(self)
+        self.TFIDF.set("TF")  # default value
+        self.TFIDFOptions = OptionMenu(self, self.TFIDF, "TF", "IDF", "TF-IDF").place(x=500, y=80)
 
         self.TFMethodLabel = Label(self, text='TF Method').place(x=420, y=120)
         self.IDFMethodLabel = Label(self, text='IDF Method').place(x=420, y=160)
@@ -364,6 +364,34 @@ class MyWindow2(Page):
         technique = self.technique.get()
         tokenizationMethod = self.tokenizationSingleMethod.get()
         similarityChosenMethod = self.similarityMethod.get()
+        TFIDFoption = self.TFIDF.get()
+        TF_Method = self.TFMethod.get()
+        IDF_Method = self.IDFMethod.get()
+        if( TFIDFoption == "TF"):
+            TF=1
+            IDF=0
+        elif( TFIDFoption == "IDF"):
+            TF = 0
+            IDF = 1
+        else:
+            TF = 1
+            IDF = 1
+
+        if(TF_Method == "TF over maximum TF"):
+            TF_Method = TFIDF.TF_over_max
+        elif(TF_Method == "Logarithmic TF"):
+            TF_Method = TFIDF.TF_log
+        else:
+            TF_Method = TFIDF.TF_normal
+
+        if (IDF_Method =="Logarithmic IDF plus one"):
+            IDF_Method = TFIDF.IDF_log_plus_one
+        elif (IDF_Method == "Absolute Logarithmic IDF"):
+            IDF_Method = TFIDF.IDF_absolute_log
+        else:
+            IDF_Method = TFIDF.IDF_log
+
+
         if (tokenizationMethod == "Tag-based"):
             tokenizationMethod = tokenization.sequence_to_vector_tag
         elif (tokenizationMethod == "Edge-based"):
@@ -418,9 +446,13 @@ class MyWindow2(Page):
                                          times,
                                          tokenizationMethod,
                                          similarityChosenMethod,
+                                         TF_Method,
+                                         IDF_Method,
                                          processed_sequences_database = processed_sequences_database,
                                          numberOfOutputs = numberOfOutputs,
-                                         numberOfSequencesToSearch= numberOfSequences)
+                                         numberOfSequencesToSearch= numberOfSequences,
+                                         TF = TF,
+                                         IDF = IDF)
 
         for i,resultDict in enumerate(results):
             if(i == 0):
