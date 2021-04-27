@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from similarityMeasures import similarity,tokenization
 from data import parser
+from search import searchSimilarSequences
 from os import sys, path
 sys.path.append(path.dirname(__file__))
 
@@ -256,6 +257,69 @@ class MyWindow2(Page):
         self.searchButton = Button(self, text="Search",command=self.searchSimilarSequence).place(x=650,y=48)
 
 
+        self.numberOfSequencesToLookInLabel = Label(self, text='Number of sequences to search:')
+        self.numberOfSequencesToLookIn = Text(self, bd=3, width=10, height=1)
+        self.numberOfSequencesToLookInLabel.place(x=630,y=28)
+        self.numberOfSequencesToLookIn.place(x=710,y=50)
+
+
+        #options
+        self.technique = StringVar(self)
+        self.technique.set("TED")  # default value
+        self.techniqueOptions = OptionMenu(self, self.technique, "TED", "Multiset/vector-based").place(x=200, y=80)
+
+        self.preprocessButton = Button(self, text="Preprocess Database", command=self.preprocessDatabase).place(x=60, y=120)
+        self.tokenizationSingleMethod = StringVar(self)
+        self.tokenizationSingleMethod.set("Tag-based")  # default value
+        self.tokenizationSingleMethodOptions = OptionMenu(self, self.tokenizationSingleMethod, "Tag-based",
+                                                          "Edge-based",
+                                                          "All Paths").place(x=200, y=120)
+        self.similarityMethod = StringVar(self)
+        self.similarityMethod.set("ED")  # default value
+
+        self.similarityMethodOptions = OptionMenu(self, self.similarityMethod, "ED", "Jaccard",
+                                                  "Dice", "Cosine", "Pearson").place(x=200, y=160)
+        self.termIndexing = StringVar(self)
+        self.termIndexing.set("TF")  # default value
+        self.termIndexingOptions = OptionMenu(self, self.termIndexing, "TF", "IDF", "TF-IDF").place(x=500, y=80)
+
+        self.TFMethodLabel = Label(self, text='TF Method').place(x=420, y=120)
+        self.IDFMethodLabel = Label(self, text='IDF Method').place(x=420, y=160)
+
+        self.TFMethod = StringVar(self)
+        self.TFMethod.set("Simple TF")  # default value
+        self.TFMethodOptions = OptionMenu(self, self.TFMethod, "Simple TF", "TF over maximum TF", "Logarithmic TF").place(x=500, y=118)
+
+        self.IDFMethod = StringVar(self)
+        self.IDFMethod.set("Logarithmic IDF")  # default value
+        self.IDFMethodOptions = OptionMenu(self, self.IDFMethod, "Logarithmic IDF", "Logarithmic IDF plus one", "Absolute Logarithmic IDF").place(x=500, y=158)
+
+
+        ##Search results
+        self.searchResultsContainer = tk.Frame(self, bd=1, width=50, height=10, relief="sunken")
+        # Horizontal (x) Scroll bar
+        self.xscrollbar2 = Scrollbar(self.searchResultsContainer, orient=HORIZONTAL)
+        self.xscrollbar2.pack(side=BOTTOM, fill=X)
+        # Vertical (y) Scroll Bar
+        self.yscrollbar2 = Scrollbar(self.searchResultsContainer)
+        self.yscrollbar2.pack(side=RIGHT, fill=Y)
+        self.searchResults = Text(self.searchResultsContainer, width=50, height=10, wrap="none",
+                                     xscrollcommand=self.xscrollbar2.set,
+                                     yscrollcommand=self.yscrollbar2.set)
+        self.searchResults.pack()
+        self.xscrollbar2.config(command=self.searchResults.xview)
+        self.yscrollbar2.config(command=self.searchResults.yview)
+        self.searchResultsContainer.place(x=200, y=200)
+
+
+
+
+
+
+
+
+
+
         ##Databse of sequences
         self.sequenceDatabaseContainer = tk.Frame(self, bd=1, width=50, height=10, relief="sunken")
         # Horizontal (x) Scroll bar
@@ -270,41 +334,91 @@ class MyWindow2(Page):
         self.sequenceDatabase.pack()
         self.xscrollbar.config(command=self.sequenceDatabase.xview)
         self.yscrollbar.config(command=self.sequenceDatabase.yview)
-        self.sequenceDatabaseContainer.place(x=750, y=50)
-
+        self.sequenceDatabaseContainer.place(x=850, y=50)
         self.numberOfSequencesToShowLabel = Label(self, text='Show:')
         self.numberOfSequencesToShow = Text(self, bd=3, width=10, height=1)
-        self.numberOfSequencesToShowLabel.place(x=750, y=250)
-        self.numberOfSequencesToShow.place(x=800, y=250)
+        self.numberOfSequencesToShowLabel.place(x=850, y=250)
+        self.numberOfSequencesToShow.place(x=900, y=250)
         self.fileNameLabel = Label(self, text='File:')
         self.fileName = Text(self, bd=3, width=20, height=1)
         self.fileName.insert('0.0',"humanRNA.fa")
-        self.fileNameLabel.place(x=750, y=290)
-        self.fileName.place(x=800, y=290)
-        self.initializeDatabaseButton = Button(self, text="Initialize Db", command=self.initializeDatabase).place(x=900, y=250)
+        self.fileNameLabel.place(x=850, y=290)
+        self.fileName.place(x=900, y=290)
+        self.initializeDatabaseButton = Button(self, text="Initialize Database", command=self.initializeDatabase).place(x=1000, y=250)
 
     def searchSimilarSequence(self):
-        pass
+        self.searchResults.delete('1.0', 'end')
+        global sequences
+        results = []
+        times = []
+        technique = self.technique.get()
+        tokenizationMethod = self.tokenizationSingleMethod.get()
+        similarityChosenMethod = self.similarityMethod.get()
+        if (tokenizationMethod == "Tag-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_tag
+        elif (tokenizationMethod == "Edge-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_edge
+        else:
+            tokenizationMethod = tokenization.sequence_to_vector_allpaths
 
+        if (similarityChosenMethod == "ED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.technique.set("TED")
+        elif (similarityChosenMethod == "Jaccard"):
+            similarityChosenMethod = similarity.multiset_jackard_measure
+        elif (similarityChosenMethod == "Dice"):
+            similarityChosenMethod = similarity.multiset_dice_measure
+        elif (similarityChosenMethod == "Cosine"):
+            similarityChosenMethod = similarity.vector_cosine_measure
+        else:
+            similarityChosenMethod = similarity.vector_pearsoncorrelation_measure
+
+        if (technique == "TED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.similarityMethod.set("ED")
+
+        try:
+            numberOfSequences = int(self.numberOfSequencesToLookIn.get('0.0', END))
+        except:
+            numberOfSequences = 100
+
+        searchSimilarSequences.IR_Method(sequences,
+                                         self.sequence.get('0.0', END),
+                                         results,
+                                         times,
+                                         tokenizationMethod,
+                                         similarityChosenMethod,
+                                         processed_sequences_database = [],
+                                         numberOfOutputs = 3,
+                                         numberOfSequencesToSearch= numberOfSequences)
+        print(results)
+        for result in results:
+            self.searchResults.insert(END, result)
+            self.searchResults.insert(END, "\n")
+        for time in times:
+            self.searchResults.insert(END, time)
+            self.searchResults.insert(END, "\n")
     def initializeDatabase(self):
         self.sequenceDatabase.delete('1.0', 'end')
+        global sequences
         try:
-            equences = parser.parse_fa(self.fileName.get('0.0', END))
+            sequences = parser.parse_fa(self.fileName.get('0.0', END))
         except:
             sequences = parser.parse_fa('humanRNA.fa')
             self.fileName.delete('1.0', 'end')
             self.fileName.insert('0.0', "humanRNA.fa")
         try:
-            sequences = sequences[0:int(self.numberOfSequencesToShow.get('0.0', END))]
+            sequencesToShow = sequences[0:int(self.numberOfSequencesToShow.get('0.0', END))]
         except:
-            sequences = []
+            sequencesToShow = []
 
 
-        for sequence in sequences:
+        for sequence in sequencesToShow:
             self.sequenceDatabase.insert(END, sequence)
             self.sequenceDatabase.insert(END, "\n")
 
-
+    def preprocessDatabase(self):
+        pass
 # Managing both pages
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
