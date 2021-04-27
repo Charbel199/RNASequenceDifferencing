@@ -498,6 +498,37 @@ class MyWindow2(Page):
             numberOfSequences = 100
         sequencesDatabase = sequences[0:numberOfSequences]
 
+
+
+        TFIDFoption = self.TFIDF.get()
+        TF_Method = self.TFMethod.get()
+        IDF_Method = self.IDFMethod.get()
+        if (TFIDFoption == "TF"):
+            TF = 1
+            IDF = 0
+        elif (TFIDFoption == "IDF"):
+            TF = 0
+            IDF = 1
+        else:
+            TF = 1
+            IDF = 1
+
+        if (TF_Method == "TF over maximum TF"):
+            TF_Method = TFIDF.TF_over_max
+        elif (TF_Method == "Logarithmic TF"):
+            TF_Method = TFIDF.TF_log
+        else:
+            TF_Method = TFIDF.TF_normal
+
+        if (IDF_Method == "Logarithmic IDF plus one"):
+            IDF_Method = TFIDF.IDF_log_plus_one
+        elif (IDF_Method == "Absolute Logarithmic IDF"):
+            IDF_Method = TFIDF.IDF_absolute_log
+        else:
+            IDF_Method = TFIDF.IDF_log
+
+
+
         tokenizationMethod = self.tokenizationSingleMethod.get()
         if (tokenizationMethod == "Tag-based"):
             tokenizationMethod = tokenization.sequence_to_vector_tag
@@ -505,8 +536,16 @@ class MyWindow2(Page):
             tokenizationMethod = tokenization.sequence_to_vector_edge
         else:
             tokenizationMethod = tokenization.sequence_to_vector_allpaths
+
+
         if (not processed_sequences_database):
+
             processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
+            processed = []
+            for elements in processed_sequences_database:
+                newElement = TFIDF.updateWeights(elements, processed_sequences_database, TF_Method, IDF_Method, TF=TF, IDF=IDF)
+                processed.append(newElement)
+            processed_sequences_database = processed
     def deletePreprocessDatabase(self):
         global processed_sequences_database
         processed_sequences_database = []
