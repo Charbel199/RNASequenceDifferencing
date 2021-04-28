@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog
 import tkinter.scrolledtext as scrolledtext
 import matplotlib.pyplot as plt
@@ -7,6 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from similarityMeasures import similarity,tokenization
 from data import parser
 from search import searchSimilarSequences, TFIDF
+from evaluation import IREvaluation
 from os import sys, path
 sys.path.append(path.dirname(__file__))
 
@@ -159,8 +161,12 @@ class MyWindow1(Page):
 
 
     def plotRadar(self):
-
+        global chart_type
         from math import pi
+        try:
+            chart_type.get_tk_widget().place_forget()
+        except:
+            print('No graph')
         figure = plt.Figure(figsize=(3.2, 3), dpi=100)
         figure.patch.set_facecolor('#F0F0F0')
         ax = figure.add_subplot(111 ,polar=True)
@@ -194,7 +200,7 @@ class MyWindow1(Page):
         # Fill area
         ax.fill(angles, values, 'b', alpha=0.1)
 
-        global chart_type
+
         chart_type = FigureCanvasTkAgg(figure, root)
         chart_type.get_tk_widget().place(x=500, y=390)
 
@@ -324,11 +330,25 @@ class MyWindow2(Page):
         self.wasItPreprocessedLabel = Label(self, text=' ')
         self.wasItPreprocessedLabel.place(x=700, y=255)
 
+        self.evaluateButton = Button(self, text="Evaluate Results", command=self.evaluateResults).place(x=200,y=410)
+        self.PRandRLabel = Label(self, text=' ')
+        self.PRandRLabel.place(x=110, y=452)
 
+        self.MAPLabel = Label(self, text='MAP:')
+        self.MAP = Text(self, bd=3, width=10, height=1)
+        self.MAPLabel.place(x=320, y=500)
+        self.MAP.place(x=400, y=500)
 
+        self.FValueLabel = Label(self, text='F-Value:')
+        self.FValue = Text(self, bd=3, width=10, height=1)
+        self.FValueLabel.place(x=320, y=530)
+        self.FValue.place(x=400, y=530)
 
+        self.sep = ttk.Separator(self,orient=tk.VERTICAL)
+        self.sep.place(x=510, y=430, relheight=0.4)
 
-
+        self.sep2 = ttk.Separator(self, orient=tk.HORIZONTAL)
+        self.sep2.place(x=730, y=300, relwidth = 0.7)
         ##Databse of sequences
         self.sequenceDatabaseContainer = tk.Frame(self, bd=1, width=50, height=10, relief="sunken")
         # Horizontal (x) Scroll bar
@@ -351,14 +371,15 @@ class MyWindow2(Page):
         self.fileNameLabel = Label(self, text='File:')
         self.fileName = Text(self, bd=3, width=20, height=1)
         self.fileName.insert('0.0',"humanRNA.fa")
-        self.fileNameLabel.place(x=855, y=290)
-        self.fileName.place(x=900, y=290)
+        self.fileNameLabel.place(x=1110, y=250)
+        self.fileName.place(x=1145, y=250)
         self.initializeDatabaseButton = Button(self, text="Initialize Database", command=self.initializeDatabase).place(x=1000, y=250)
 
     def searchSimilarSequence(self):
         self.searchResults.delete('1.0', 'end')
         self.singleSearchTime.delete('1.0', 'end')
         global sequences
+        global results
         results = []
         times = []
         technique = self.technique.get()
@@ -549,6 +570,68 @@ class MyWindow2(Page):
     def deletePreprocessDatabase(self):
         global processed_sequences_database
         processed_sequences_database = []
+
+    def evaluateResults(self):
+        global results
+        global sequences
+        global PrecisionRecallGraph
+        self.PRandRLabel.config(text="Precision-Recall Graph:")
+        self.MAP.delete('1.0', 'end')
+        self.FValue.delete('1.0', 'end')
+        try:
+            PrecisionRecallGraph.get_tk_widget().place_forget()
+        except:
+            print('No graph')
+        try:
+            queryResults = results[0]
+            expectedResults = []
+            try:
+                numberOfSequences = int(self.numberOfSequencesToLookIn.get('0.0', END))
+            except:
+                numberOfSequences = 100
+
+            try:
+                numberOfOutputs = int(self.numberOfOutputs.get('0.0', END))
+            except:
+                numberOfOutputs = 3
+
+            searchSimilarSequences.IR_Method(sequences,
+                                         self.sequence.get('0.0', END),
+                                         expectedResults,
+                                         [],
+                                         0,
+                                         similarity.TEDSimilarity_measure,
+                                         0,
+                                         0,
+                                         numberOfOutputs = numberOfOutputs,
+                                         numberOfSequencesToSearch= numberOfSequences)
+
+            print(expectedResults[0])
+            print(queryResults)
+            precisions, recalls, MAP, FValue = IREvaluation.evaluate(expectedResults[0], queryResults)
+
+            #Set them and create graph
+            figure = plt.Figure(figsize=(2, 2), dpi=100)
+            figure.patch.set_facecolor('#F0F0F0')
+            ax = figure.add_subplot(111)
+            PrecisionRecallGraph = FigureCanvasTkAgg(figure, root)
+            PrecisionRecallGraph.get_tk_widget().place(x=100, y=500)
+
+            ax.scatter(recalls, precisions,s=10)
+            ax.plot(recalls, precisions)
+            ax.set_ylim(0, 1.05)
+            ax.set_xlim(0, 1.05)
+            ax.set_xticks([0, 0.5, 1])
+            ax.set_xticklabels(["0", "0.5", "1"], color="red", size=7)
+            # Draw ylabels
+            ax.set_yticks([0, 0.5, 1])
+            ax.set_yticklabels( ["0", "0.5", "1"], color="red", size=7)
+
+            self.MAP.insert(END, MAP)
+            self.FValue.insert(END, FValue)
+        except:
+            print('NO RESULTS')
+        pass
 # Managing both pages
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -564,7 +647,7 @@ class MainView(tk.Frame):
         p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
-        b1 = tk.Button(buttonframe, text="Similarity Comparison", command=p1.lift)
+        b1 = tk.Button(buttonframe, text="Similarity Comparison", command=lambda:[p1.lift(),PrecisionRecallGraph.get_tk_widget().place_forget()])
         b2 = tk.Button(buttonframe, text="Search", command=lambda:[p2.lift(),chart_type.get_tk_widget().place_forget()])
 
         b1.pack(side="left")
