@@ -375,6 +375,75 @@ class MyWindow2(Page):
         self.fileName.place(x=1145, y=250)
         self.initializeDatabaseButton = Button(self, text="Initialize Database", command=self.initializeDatabase).place(x=1000, y=250)
 
+
+
+
+
+
+
+
+
+
+
+        x = 530
+        y= 420
+        #Options 2
+        self.timeEvalTechnique = StringVar(self)
+        self.timeEvalTechnique.set("TED")  # default value
+        self.timeEvalTechnique1Options = OptionMenu(self, self.timeEvalTechnique, "TED", "Multiset/vector-based").place(x=x, y=y)
+
+        self.timeEvalTokenizationSingleMethod = StringVar(self)
+        self.timeEvalTokenizationSingleMethod.set("Tag-based")  # default value
+        self.timeEvalTokenizationSingleMethodOptions = OptionMenu(self, self.timeEvalTokenizationSingleMethod, "Tag-based",
+                                                          "Edge-based",
+                                                          "All Paths").place(x=x, y=y+30)
+        self.timeEvalSimilarityMethod = StringVar(self)
+        self.timeEvalSimilarityMethod.set("ED")  # default value
+
+        self.timeEvalSimilarityMethodOptions = OptionMenu(self, self.timeEvalSimilarityMethod, "ED", "Jaccard",
+                                                  "Dice", "Cosine", "Pearson").place(x=x, y=y+60)
+        self.timeEvalTFIDF = StringVar(self)
+        self.timeEvalTFIDF.set("TF")  # default value
+        self.timeEvalTFIDFOptions = OptionMenu(self, self.timeEvalTFIDF, "TF", "IDF", "TF-IDF").place(x=x, y=y+90)
+
+        self.timeEvalTFMethod = StringVar(self)
+        self.timeEvalTFMethod.set("Simple TF")  # default value
+        self.timeEvalTFMethodOptions = OptionMenu(self, self.timeEvalTFMethod, "Simple TF", "TF over maximum TF", "Logarithmic TF").place(x=x, y=y+120)
+
+        self.timeEvalIDFMethod = StringVar(self)
+        self.timeEvalIDFMethod.set("Logarithmic IDF")  # default value
+        self.timeEvalIDFMethodOptions = OptionMenu(self, self.timeEvalIDFMethod, "Logarithmic IDF", "Logarithmic IDF plus one", "Absolute Logarithmic IDF").place(x=x, y=y+150)
+
+        self.addTimeEvalMethodButton = Button(self, text="Add Method", command=self.addTimeEvalMethod).place(x=x,
+                                                                                                             y=y+190)
+        self.clearTimeEvalMethodButton = Button(self, text="Clear All Methods", command=self.clearTimeEvalMethod).place(x=x,
+                                                                                                             y=y + 220)
+
+        self.evaluateTimeButton = Button(self, text="Evaluate Time", command=self.evaluateTime).place(x=x+180,
+                                                                                                             y=y)
+
+        x=720
+        y=320
+        self.numberOfPairwiseSequencesLabel = Label(self, text='Number of pairwise sequences to evaluate:').place(x=x,y=y)
+        self.numberOfPairwiseSequences1 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences1.place(x=x,y=y+30)
+        self.numberOfPairwiseSequences2 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences2.place(x=x+80, y=y + 30)
+        self.numberOfPairwiseSequences3 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences3.place(x=x+160, y=y + 30)
+        self.numberOfPairwiseSequences4 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences4.place(x=x+240, y=y + 30)
+        self.numberOfPairwiseSequences5 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences5.place(x=x + 320, y=y + 30)
+        self.numberOfPairwiseSequences6 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences6.place(x=x + 400, y=y + 30)
+        self.numberOfPairwiseSequences7 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences7.place(x=x + 480, y=y + 30)
+        self.numberOfPairwiseSequences8 = Text(self, bd=3, width=10, height=1)
+        self.numberOfPairwiseSequences8.place(x=x + 560, y=y + 30)
+
+
+
     def searchSimilarSequence(self):
         self.searchResults.delete('1.0', 'end')
         self.singleSearchTime.delete('1.0', 'end')
@@ -632,6 +701,177 @@ class MyWindow2(Page):
         except:
             print('NO RESULTS')
         pass
+
+    def addTimeEvalMethod(self):
+        technique = self.timeEvalTechnique.get()
+        tokenizationMethod = self.timeEvalTokenizationSingleMethod.get()
+        similarityChosenMethod = self.timeEvalSimilarityMethod.get()
+        TFIDFoption = self.timeEvalTFIDF.get()
+        TF_Method = self.timeEvalTFMethod.get()
+        IDF_Method = self.timeEvalIDFMethod.get()
+        if (TFIDFoption == "TF"):
+            TF = 1
+            IDF = 0
+        elif (TFIDFoption == "IDF"):
+            TF = 0
+            IDF = 1
+        else:
+            TF = 1
+            IDF = 1
+
+        if (TF_Method == "TF over maximum TF"):
+            TF_Method = TFIDF.TF_over_max
+        elif (TF_Method == "Logarithmic TF"):
+            TF_Method = TFIDF.TF_log
+        else:
+            TF_Method = TFIDF.TF_normal
+
+        if (IDF_Method == "Logarithmic IDF plus one"):
+            IDF_Method = TFIDF.IDF_log_plus_one
+        elif (IDF_Method == "Absolute Logarithmic IDF"):
+            IDF_Method = TFIDF.IDF_absolute_log
+        else:
+            IDF_Method = TFIDF.IDF_log
+
+        if (tokenizationMethod == "Tag-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_tag
+        elif (tokenizationMethod == "Edge-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_edge
+        else:
+            tokenizationMethod = tokenization.sequence_to_vector_allpaths
+
+        if (similarityChosenMethod == "ED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.timeEvalTechnique.set("TED")
+        elif (similarityChosenMethod == "Jaccard"):
+            similarityChosenMethod = similarity.multiset_jackard_measure
+        elif (similarityChosenMethod == "Dice"):
+            similarityChosenMethod = similarity.multiset_dice_measure
+        elif (similarityChosenMethod == "Cosine"):
+            similarityChosenMethod = similarity.vector_cosine_measure
+        else:
+            similarityChosenMethod = similarity.vector_pearsoncorrelation_measure
+
+        if (technique == "TED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.timeEvalSimilarityMethod.set("ED")
+
+
+        if ("timeEvalArray" not in globals()):
+            global timeEvalArray
+            timeEvalArray = []
+            timeEvalArray.append([tokenizationMethod, similarityChosenMethod, TF_Method, IDF_Method, TF, IDF])
+        else:
+            timeEvalArray.append([tokenizationMethod,similarityChosenMethod,TF_Method,IDF_Method,TF,IDF])
+
+        print(timeEvalArray)
+
+    def evaluateTime(self):
+        global TimeEvalGraph
+        try:
+            TimeEvalGraph.get_tk_widget().place_forget()
+        except:
+            print('No graph')
+        if ("timeEvalArray" not in globals()):
+            global timeEvalArray
+            timeEvalArray = []
+            return
+
+        numberOfSequences = []
+        #Get number of pairwise numbers
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences1.get("1.0",'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences2.get("1.0", 'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences3.get("1.0", 'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences4.get("1.0", 'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences5.get("1.0", 'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences6.get("1.0", 'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences7.get("1.0", 'end-1c')))
+        except:
+            pass
+        try:
+            numberOfSequences.append(int(self.numberOfPairwiseSequences8.get("1.0", 'end-1c')))
+        except:
+            pass
+
+
+        if(len(numberOfSequences) == 0):
+            return
+        print(numberOfSequences)
+        times = []
+
+        # Set them and create graph
+        figure = plt.Figure(figsize=(6, 2.7), dpi=100)
+        figure.patch.set_facecolor('#F0F0F0')
+        ax = figure.add_subplot(111)
+        TimeEvalGraph = FigureCanvasTkAgg(figure, root)
+        TimeEvalGraph.get_tk_widget().place(x=800, y=410)
+
+
+        #ax.set_ylim(0, 1.05)
+        #ax.set_xlim(0, 1.05)
+        #ax.set_xticks([0, 0.5, 1])
+        #ax.set_xticklabels(["0", "0.5", "1"], color="red", size=7)
+        # Draw ylabels
+        #ax.set_yticks([0, 0.5, 1])
+        #ax.set_yticklabels(["0", "0.5", "1"], color="red", size=7)
+        from matplotlib.ticker import FormatStrFormatter
+
+
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+        ax.set_xlabel("Number of sequences",fontsize=8)
+        ax.set_ylabel("Time (s)",fontsize=6)
+        legends = []
+        for method in timeEvalArray:
+
+            legends.append(method[0].__name__)
+            for num in numberOfSequences:
+                searchSimilarSequences.IR_Method(sequences,
+                                                 self.sequence.get('0.0', END),
+                                                 [],
+                                                 times,
+                                                 method[0],
+                                                 method[1],
+                                                 method[2],
+                                                 method[3],
+                                                 processed_sequences_database=[],
+                                                 numberOfOutputs=3,
+                                                 numberOfSequencesToSearch=num,
+                                                 TF=method[4],
+                                                 IDF=method[5])
+
+            ax.scatter(numberOfSequences, times, s=10)
+            ax.plot(numberOfSequences, times)
+
+            print(times)
+            times = []
+        ax.legend(legends,fontsize=6,loc=1)
+        pass
+
+    def clearTimeEvalMethod(self):
+        if ("timeEvalArray" not in globals()):
+            global timeEvalArray
+            timeEvalArray = []
+        else:
+            timeEvalArray = []
 # Managing both pages
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -647,7 +887,7 @@ class MainView(tk.Frame):
         p1.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
         p2.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
-        b1 = tk.Button(buttonframe, text="Similarity Comparison", command=lambda:[p1.lift(),PrecisionRecallGraph.get_tk_widget().place_forget()])
+        b1 = tk.Button(buttonframe, text="Similarity Comparison", command=lambda:[p1.lift(),PrecisionRecallGraph.get_tk_widget().place_forget(),TimeEvalGraph.get_tk_widget().place_forget()])
         b2 = tk.Button(buttonframe, text="Search", command=lambda:[p2.lift(),chart_type.get_tk_widget().place_forget()])
 
         b1.pack(side="left")
