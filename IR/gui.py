@@ -9,6 +9,7 @@ from similarityMeasures import similarity,tokenization
 from data import parser
 from search import searchSimilarSequences, TFIDF
 from evaluation import IREvaluation
+from multithreading import search
 from os import sys, path
 sys.path.append(path.dirname(__file__))
 
@@ -280,6 +281,16 @@ class MyWindow2(Page):
 
         self.preprocessButton = Button(self, text="Preprocess Database", command=self.preprocessDatabase).place(x=60, y=120)
         self.deletePreprocessButton = Button(self, text="Delete preprocessed Database", command=self.deletePreprocessDatabase).place(x=25, y=150)
+
+
+        self.addToMultithreadingButton = Button(self, text="Add thread", command=self.addThread).place(x=60, y=230)
+        self.multithreadingSearchButton = Button(self, text="Multithread search",
+                                                 command=self.multithreadSearch).place(x=60, y=270)
+        self.deleteMultithreadingButton = Button(self, text="Delete threads", command=self.deleteThreads).place(x=60, y=310)
+
+
+
+
         self.tokenizationSingleMethod = StringVar(self)
         self.tokenizationSingleMethod.set("Tag-based")  # default value
         self.tokenizationSingleMethodOptions = OptionMenu(self, self.tokenizationSingleMethod, "Tag-based",
@@ -514,7 +525,7 @@ class MyWindow2(Page):
             numberOfOutputs = int(self.numberOfOutputs.get('0.0', END))
         except:
             numberOfOutputs = 3
-        
+
         global processed_sequences_database
         if("processed_sequences_database" not in globals()):
             processed_sequences_database = []
@@ -872,6 +883,86 @@ class MyWindow2(Page):
             timeEvalArray = []
         else:
             timeEvalArray = []
+
+
+
+    def addThread(self):
+        technique = self.technique.get()
+        tokenizationMethod = self.tokenizationSingleMethod.get()
+        similarityChosenMethod = self.similarityMethod.get()
+        TFIDFoption = self.TFIDF.get()
+        TF_Method = self.TFMethod.get()
+        IDF_Method = self.IDFMethod.get()
+        if (TFIDFoption == "TF"):
+            TF = 1
+            IDF = 0
+        elif (TFIDFoption == "IDF"):
+            TF = 0
+            IDF = 1
+        else:
+            TF = 1
+            IDF = 1
+
+        if (TF_Method == "TF over maximum TF"):
+            TF_Method = TFIDF.TF_over_max
+        elif (TF_Method == "Logarithmic TF"):
+            TF_Method = TFIDF.TF_log
+        else:
+            TF_Method = TFIDF.TF_normal
+
+        if (IDF_Method == "Logarithmic IDF plus one"):
+            IDF_Method = TFIDF.IDF_log_plus_one
+        elif (IDF_Method == "Absolute Logarithmic IDF"):
+            IDF_Method = TFIDF.IDF_absolute_log
+        else:
+            IDF_Method = TFIDF.IDF_log
+
+        if (tokenizationMethod == "Tag-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_tag
+        elif (tokenizationMethod == "Edge-based"):
+            tokenizationMethod = tokenization.sequence_to_vector_edge
+        else:
+            tokenizationMethod = tokenization.sequence_to_vector_allpaths
+
+        if (similarityChosenMethod == "ED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.technique.set("TED")
+        elif (similarityChosenMethod == "Jaccard"):
+            similarityChosenMethod = similarity.multiset_jackard_measure
+        elif (similarityChosenMethod == "Dice"):
+            similarityChosenMethod = similarity.multiset_dice_measure
+        elif (similarityChosenMethod == "Cosine"):
+            similarityChosenMethod = similarity.vector_cosine_measure
+        else:
+            similarityChosenMethod = similarity.vector_pearsoncorrelation_measure
+
+        if (technique == "TED"):
+            similarityChosenMethod = similarity.TEDSimilarity_measure
+            self.similarityMethod.set("ED")
+
+        if ("threadArray" not in globals()):
+            global threadArray
+            threadArray = []
+            threadArray.append([tokenizationMethod, similarityChosenMethod, TF_Method, IDF_Method, TF, IDF])
+        else:
+            threadArray.append([tokenizationMethod,similarityChosenMethod,TF_Method,IDF_Method,TF,IDF])
+        print(threadArray)
+    def multithreadSearch(self):
+
+        if ("threadArray" not in globals()):
+            global threadArray
+            threadArray = []
+            return
+        search.multithread_search(self.sequence.get('0.0', END), sequences,threadArray,numberOfSequencesToSearch=100,numberOfOutputs=3)
+    def deleteThreads(self):
+        if ("threadArray" not in globals()):
+            global threadArray
+            threadArray = []
+        else:
+            threadArray = []
+
+
+
 # Managing both pages
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
