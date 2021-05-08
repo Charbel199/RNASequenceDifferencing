@@ -948,12 +948,35 @@ class MyWindow2(Page):
             threadArray.append([tokenizationMethod,similarityChosenMethod,TF_Method,IDF_Method,TF,IDF])
         print(threadArray)
     def multithreadSearch(self):
-
+        self.searchResults.delete('1.0', 'end')
+        self.singleSearchTime.delete('1.0', 'end')
         if ("threadArray" not in globals()):
             global threadArray
             threadArray = []
             return
-        search.multithread_search(self.sequence.get('0.0', END), sequences,threadArray,numberOfSequencesToSearch=100,numberOfOutputs=3)
+        try:
+            numberOfOutputs = int(self.numberOfOutputs.get('0.0', END))
+        except:
+            numberOfOutputs = 3
+        try:
+            numberOfSequences = int(self.numberOfSequencesToLookIn.get('0.0', END))
+        except:
+            numberOfSequences = 100
+        results, times = search.multithread_search(self.sequence.get('0.0', END), sequences,threadArray,numberOfSequencesToSearch=numberOfSequences,numberOfOutputs=numberOfOutputs)
+        for i,resultDict in enumerate(results):
+            if(i == 0):
+                self.searchResults.insert(END, "Top " +str(numberOfOutputs)+ " results:")
+                self.searchResults.insert(END, "\n")
+            else:
+                self.searchResults.insert(END, "\nLowest " +str(numberOfOutputs)+ " results:")
+                self.searchResults.insert(END, "\n")
+
+            for key in resultDict:
+                self.searchResults.insert(END, key)
+                self.searchResults.insert(END, " : ")
+                self.searchResults.insert(END, resultDict[key])
+                self.searchResults.insert(END, "\n")
+        self.singleSearchTime.insert(END, max(times))
     def deleteThreads(self):
         if ("threadArray" not in globals()):
             global threadArray
