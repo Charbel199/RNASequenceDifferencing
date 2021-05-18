@@ -5,7 +5,7 @@ def multithread_search(sequence, sequences, methodsArray,numberOfSequencesToSear
     times = []
     threads = []
     for method in methodsArray:
-        thread = threading.Thread(target=searchSimilarSequences.IR_Method, args=(sequences, sequence,results,times,method[0],method[1],method[2],method[3],0, [],80,numberOfSequencesToSearch,method[4],method[5]))
+        thread = threading.Thread(target=searchSimilarSequences.IR_Method, args=(sequences, sequence,results,times,method[0],method[1],method[2],method[3],0, [],numberOfSequencesToSearch,numberOfSequencesToSearch,method[4],method[5]))
         thread.start()
         threads.append(thread)
 
@@ -22,8 +22,8 @@ def multithread_search(sequence, sequences, methodsArray,numberOfSequencesToSear
         sum = 0
         for result in results:
             sum += result[key]
-        weigth = sum/len(results)
-        joinedResults[key] = weigth
+        weight = sum/len(results)
+        joinedResults[key] = weight
 
     joinedResults = dict(sorted(joinedResults.items(), key=lambda item: item[1]))
     print(joinedResults)

@@ -973,8 +973,6 @@ class MyWindow2(Page):
 
             for key in resultDict:
                 self.searchResults.insert(END, key)
-                self.searchResults.insert(END, " : ")
-                self.searchResults.insert(END, resultDict[key])
                 self.searchResults.insert(END, "\n")
         self.singleSearchTime.insert(END, max(times))
     def deleteThreads(self):

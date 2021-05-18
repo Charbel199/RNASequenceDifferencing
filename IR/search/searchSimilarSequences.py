@@ -1,7 +1,7 @@
 from similarityMeasures import similarity
 import time
 from search import TFIDF
-def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,TF_method,IDF_method,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 0,TF = 1,IDF = 0):
+def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,TF_method,IDF_method,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 100,TF = 1,IDF = 0):
     if(numberOfSequencesToSearch == 0):
         numberOfSequencesToSearch = len(sequencesDatabase)
     if(similarityMethod == similarity.TEDSimilarity_measure ):
