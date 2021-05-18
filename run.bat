@@ -1,5 +1,5 @@
 @echo off
-title Docker Image updater
+title RNA Sequence Differencing
 echo Starting ...
 echo IR or TED
 set /P program=Enter mode:
