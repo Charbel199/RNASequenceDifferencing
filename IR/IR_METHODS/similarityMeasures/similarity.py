@@ -3,7 +3,7 @@ import itertools
 import math
 import time
 import numpy as np
-from similarityMeasures import updateLogic
+from IR_METHODS.similarityMeasures import updateLogic
 ##TED
 def TEDSimilarity_measure(sourceArr, destinationArr, medicalSimilarity=0):
     # Initializing empty distance array
@@ -89,7 +89,6 @@ def vector_cosine_measure(vector1,vector2):
         similarity = numerator / denominator
     #print(similarity)
     return similarity
-
 
 def vector_pearsoncorrelation_measure(vector1,vector2):
 
@@ -194,7 +193,7 @@ def multiset_dice_measure(set1,set2):
     return similarity
 
 
-
+## COMPUTE ALL OF THEM TOGETHER
 def compute_all_similarities(sourceArr,destinationArr,tokenizationMethod):
     elements1 = tokenizationMethod(sourceArr)
     elements2 = tokenizationMethod(destinationArr)
@@ -236,6 +235,8 @@ def compute_all_similarities(sourceArr,destinationArr,tokenizationMethod):
 
     return similarities,times
 
+
+## CHOOSE ONE SIMILARITY FUNCTION AND USE IT
 def compute_one_similarity(sourceArr,destinationArr,tokenizationMethod,similarityMethod):
     elements1 = tokenizationMethod(sourceArr)
     elements2 = tokenizationMethod(destinationArr)

@@ -3,7 +3,7 @@ import itertools
 import math
 
 
-
+# EXAMPLE: DIMENSIONS: {'G','A','U','C'}
 def sequence_to_vector_tag(sequence):
     vector = {}
     for nucleotide in sequence:
@@ -21,6 +21,8 @@ def sequence_to_vector_tag(sequence):
     #print(vector)
     return vector
 
+
+# EXAMPLE: DIMENSIONS: {'GA','AU','UU','CA', ...}
 def sequence_to_vector_edge(sequence):
     edges = {}
     for i in range(len(sequence)-1):
@@ -52,6 +54,9 @@ def sequence_to_vector_edge(sequence):
     #print(edges)
     return edges
 
+
+
+# EXAMPLE: DIMENSIONS: {'G','GA','GAU','A', 'AU', 'U' ...}
 def sequence_to_vector_allpaths(sequence,maximumPathLength = 5):
     paths = {}
     for i in range(len(sequence)):

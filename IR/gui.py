@@ -5,9 +5,11 @@ from tkinter import filedialog
 import tkinter.scrolledtext as scrolledtext
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from similarityMeasures import similarity,tokenization
-from data import parser
-from search import searchSimilarSequences, TFIDF
+from IR_METHODS.similarityMeasures import similarity
+from IR_METHODS.dimensionDefinition import tokenization
+from IR_METHODS.TFIDF import TFIDF
+from dataset import parser
+from search import searchSimilarSequences
 from evaluation import IREvaluation
 from multithreading import search
 from os import sys, path
@@ -173,7 +175,7 @@ class MyWindow1(Page):
         ax = figure.add_subplot(111 ,polar=True)
         categories = ["TED", "Cosine", "Pearson", "Jaccard", "Dice"]
 
-        # We are going to plot the first line of the data frame.
+        # We are going to plot the first line of the dataset frame.
         # But we need to repeat the first value to close the circular graph:
         values = []
         values.append(float(self.TED.get("1.0",'end-1c')))
@@ -195,7 +197,7 @@ class MyWindow1(Page):
         ax.set_yticklabels(["-1", "-0.5", "0", "0.5", "1"], color="red", size=7)
         ax.set_ylim(-1, 1)
 
-        # Plot data
+        # Plot dataset
         ax.plot(angles, values, linewidth=1, linestyle='solid')
 
         # Fill area

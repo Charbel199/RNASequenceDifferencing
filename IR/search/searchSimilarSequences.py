@@ -1,9 +1,12 @@
-from similarityMeasures import similarity
+from IR_METHODS.similarityMeasures import similarity
 import time
-from search import TFIDF
+from IR_METHODS.TFIDF import TFIDF
 def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,TF_method,IDF_method,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 100,TF = 1,IDF = 0):
+    # If 0 sequences to search, search in the entire db
     if(numberOfSequencesToSearch == 0):
         numberOfSequencesToSearch = len(sequencesDatabase)
+
+    # If ED of project 1
     if(similarityMethod == similarity.TEDSimilarity_measure ):
         similarities = {}
         sequencesDatabase = sequencesDatabase[0:numberOfSequencesToSearch]
@@ -17,10 +20,11 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
 
         end = time.time()
 
-
+    # If multiset / vector
     else:
         sequencesDatabase = sequencesDatabase[0:numberOfSequencesToSearch]
         start = time.time()
+        # If NOT preprocessed
         if(len(processed_sequences_database) == 0):
             print("PREPROCESSING")
             processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
@@ -29,7 +33,7 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
             for elements in processed_sequences_database:
                 processed.append(TFIDF.updateWeights(elements,processed_sequences_database,TF_method,IDF_method,TF = TF,IDF = IDF))
             processed_sequences_database = processed
-
+        # If NOT complete preprocessed
         if(len(processed_sequences_database) != len(sequencesDatabase)):
             print("PREPROCESSING")
             processed_sequences_database = list(map(tokenizationMethod, sequencesDatabase))
@@ -40,25 +44,32 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
                                                IDF=IDF))
             processed_sequences_database = processed
 
+
+
         similarities = {}
+        # TAG BASED or EDGE BASED or ALL PATH BASED
         processedInputSequence = tokenizationMethod(inputSequence)
         for i,sequence in enumerate(processed_sequences_database):
+            # Dice or Jaccard or Cosine or Pearson Correlation
             sim = similarityMethod(processedInputSequence, sequence)
             similarities[sequencesDatabase[i]] = sim
         end = time.time()
 
+
+
+
     from collections import Counter
     cnt = Counter(similarities)
 
-    # Finding 3 highest values
+    # Finding k highest values
     high = cnt.most_common(numberOfOutputs)
-    from operator import itemgetter
-    low = dict(sorted(similarities.items(), key=itemgetter(1))[:numberOfOutputs])
-
-
     highDict = {}
     for h in high:
         highDict[h[0]]=h[1]
+    from operator import itemgetter
+    # Finding k lowest values
+    low = dict(sorted(similarities.items(), key=itemgetter(1))[:numberOfOutputs])
+
 
     result.append(highDict)
     result.append(low)
