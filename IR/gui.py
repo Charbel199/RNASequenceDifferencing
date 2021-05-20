@@ -857,8 +857,12 @@ class MyWindow2(Page):
         ax.set_ylabel("Time (s)", fontsize=6)
         legends = []
         for method in timeEvalArray:
+            if(method[1].__name__ == "TEDSimilarity_measure"):
+                legends.append(method[1].__name__)
+            else:
+                legends.append(method[0].__name__)
 
-            legends.append(method[0].__name__)
+
             for num in numberOfSequences:
                 searchSimilarSequences.IR_Method(sequences,
                                                  self.sequence.get('0.0', END),
