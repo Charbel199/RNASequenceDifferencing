@@ -1,7 +1,7 @@
 from IR_METHODS.similarityMeasures import similarity
 import time
 from IR_METHODS.TFIDF import TFIDF
-def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,TF_method,IDF_method,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 100,TF = 1,IDF = 0):
+def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,similarityMethod,TF_method,IDF_method,preprocessed = 0,processed_sequences_database = [],numberOfOutputs = 3,numberOfSequencesToSearch = 100,TF = 1,IDF = 0, epsilon=2, operator='KNN' ):
     # If 0 sequences to search, search in the entire db
     if(numberOfSequencesToSearch == 0):
         numberOfSequencesToSearch = len(sequencesDatabase)
@@ -61,16 +61,35 @@ def IR_Method(sequencesDatabase,inputSequence,result,times,tokenizationMethod,si
     from collections import Counter
     cnt = Counter(similarities)
 
+    # Finding values within range epsilon
+    withinRange = cnt.most_common(len(cnt))
+    rangeDict = {}
+    for w in withinRange:
+        if (1/w[1]) < epsilon:
+            rangeDict[w[0]] = w[1]
+
     # Finding k highest values
     high = cnt.most_common(numberOfOutputs)
     highDict = {}
     for h in high:
         highDict[h[0]]=h[1]
     from operator import itemgetter
+
     # Finding k lowest values
     low = dict(sorted(similarities.items(), key=itemgetter(1))[:numberOfOutputs])
 
+    # Finding combined range and KNN operator:
+    combinedDict = dict(list(rangeDict.items())[:numberOfOutputs])
+    print(combinedDict)
 
-    result.append(highDict)
-    result.append(low)
+    if(operator=='KNN'):
+        result.append(highDict)
+        result.append(low)
+        print(result)
+    elif(operator=='Range'):
+        result.append(rangeDict)
+    else:
+        result.append(combinedDict)
+        print(result)
     times.append(end - start)
+    return result
