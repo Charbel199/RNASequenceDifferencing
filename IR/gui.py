@@ -262,13 +262,13 @@ class MyWindow2(Page):
 
         self.numberOfOutputsLabel = Label(self, text='Number of outputs:')
         self.numberOfOutputs = Text(self, bd=3, width=10, height=1)
-        self.numberOfOutputsLabel.place(x=650, y=78)
-        self.numberOfOutputs.place(x=710, y=100)
+        self.numberOfOutputsLabel.place(x=650, y=113)
+        self.numberOfOutputs.place(x=710, y=135)
 
         self.epsilonLabel = Label(self, text='Epsilon:')
         self.epsilon = Text(self, bd=3, width=10, height=1)
-        self.epsilonLabel.place(x=650, y=128)
-        self.epsilon.place(x=710, y=150)
+        self.epsilonLabel.place(x=650, y=148)
+        self.epsilon.place(x=710, y=170)
 
         # options
         self.technique = StringVar(self)
@@ -298,12 +298,12 @@ class MyWindow2(Page):
                                                   "Dice", "Cosine", "Pearson").place(x=200, y=160)
         self.operator = StringVar(self)
         self.operator.set("KNN")
-        self.operatorOptions = OptionMenu(self, self.operator, "KNN", "Range", "Combined KNN and Range").place(x=280,
-                                                                                                               y=80)
+        self.operatorOptions = OptionMenu(self, self.operator, "KNN", "Range", "Combined KNN and Range").place(x=650,
+                                                                                                               y=78)
 
         self.filter = IntVar()
         self.filterCheckButton = Checkbutton(self, text="Filter", variable=self.filter)
-        self.filterCheckButton.place(x=350, y=80)
+        self.filterCheckButton.place(x=630, y=10)
 
         self.TFIDF = StringVar(self)
         self.TFIDF.set("TF")  # default value
