@@ -16,6 +16,7 @@ def filter(sequencesToFilter, inputSequence, sequencesAfterFilter, numberOfSeque
                                                             tag, cos,
                                                             normal,
                                                             log,
+                                                            numberOfOutputs=math.floor(numberOfSequencesToSearch*0.2),
                                                             numberOfSequencesToSearch=numberOfSequencesToSearch,
                                                             epsilon=1.05, operator=operator)
     sequencesAfterFilter = list(sequencesAfterFilter[0])
