@@ -5,7 +5,7 @@ from IR_METHODS.similarityMeasures import similarity
 import math
 
 
-def filter(sequencesToFilter, inputSequence, sequencesAfterFilter, numberOfSequencesToSearch):
+def filter(sequencesToFilter, inputSequence, sequencesAfterFilter, numberOfSequencesToSearch, operator='Range'):
     tag = tokenization.sequence_to_vector_tag
     cos = similarity.vector_cosine_measure
     normal = TFIDF.TF_normal
@@ -17,6 +17,6 @@ def filter(sequencesToFilter, inputSequence, sequencesAfterFilter, numberOfSeque
                                                             normal,
                                                             log,
                                                             numberOfSequencesToSearch=numberOfSequencesToSearch,
-                                                            epsilon=1.05, operator='Range')
+                                                            epsilon=1.05, operator=operator)
     sequencesAfterFilter = list(sequencesAfterFilter[0])
     return sequencesAfterFilter
