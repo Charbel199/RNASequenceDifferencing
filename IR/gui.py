@@ -544,8 +544,9 @@ class MyWindow2(Page):
                 else:
                     self.wasItPreprocessedLabel.config(text="Preprocessing NOT Included")
         sequencesAfterFilter = []
-        sequencesAfterFilter = filter.filter(sequences, self.sequence.get('0.0', END), sequencesAfterFilter,
-                                             numberOfSequences, operator=operatorChosen)
+        if(filterOption):
+            sequencesAfterFilter = filter.filter(sequences, self.sequence.get('0.0', END), sequencesAfterFilter,
+                                                 numberOfSequences, operator=operatorChosen)
         print(len(sequencesAfterFilter))
         print(len(sequences))
         searchSimilarSequences.IR_Method(sequencesAfterFilter if filterOption == 1 else sequences,
