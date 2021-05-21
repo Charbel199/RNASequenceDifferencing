@@ -1,12 +1,15 @@
 
 # Return  precision and recall arrays, MAP, and F-Value
 def evaluate(expectedResult, queryResult):
+    # EXPECTED RESULTS are from ED-Based approach
     precisions, recalls = calculatePrecisionAndRecall(expectedResult,queryResult)
     MAP = computeMAP(expectedResult,queryResult)
     FValue = computeFValue(expectedResult,queryResult)
     return precisions,recalls,MAP,FValue
 
 
+
+# Equations from graph
 
 def calculatePrecisionAndRecall(expectedResult, queryResult):
     correctQuery = 0
@@ -24,8 +27,6 @@ def calculatePrecisionAndRecall(expectedResult, queryResult):
         precisions.append(PR)
         recalls.append(R)
     return precisions,recalls
-
-
 
 
 def computeMAP(expectedResult, queryResult):

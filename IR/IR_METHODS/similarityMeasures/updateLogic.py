@@ -12,6 +12,7 @@ Assumption: If probability higher: Cost less
 Cost = 1 - Proba
 '''
 
+# PROJECT 1
 
 def updateNode(sourceNode, destinationNode, medicalSimilarity=0):
     # If medical similarity, invoke medical similarity method

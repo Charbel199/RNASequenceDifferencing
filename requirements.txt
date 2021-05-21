@@ -1,4 +1,4 @@
-matplotlib==3.3.4
-numpy==1.19.5
 lxml==4.6.3
+numpy==1.19.5
+matplotlib==3.3.4
 Bio==0.4.1

@@ -1,6 +1,9 @@
 @echo off
 title RNA Sequence Differencing
 echo Starting ...
+echo Checking requirements ...
+pip install -r requirements.txt
+echo Done checking requirements ...
 echo IR or TED
 set /P program=Enter mode:
 if "%program%"=="IR"  goto IR

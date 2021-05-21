@@ -25,6 +25,8 @@ def set_IDF(allElements):
     print('DICT: ')
     print(dict)
 
+
+# UPDATE DIMENSION WEIGHTS BASED ON TF AND IDF
 def updateWeights(elements,allElements,TF_method,IDF_method,TF = 1,IDF = 0):
     global IDF_array
     if(len(IDF_array) == 0):
