@@ -68,6 +68,9 @@ def IR_Method(sequencesDatabase, inputSequence, result, times, tokenizationMetho
             if w[1] != 0:
                 if (1 / w[1]) < epsilon:
                     rangeDict[w[0]] = w[1]
+        # Finding combined range and KNN operator:
+        combinedDict = dict(list(rangeDict.items())[:numberOfOutputs])
+        print(combinedDict)
 
     # Finding k highest values
     high = cnt.most_common(numberOfOutputs)
@@ -79,9 +82,6 @@ def IR_Method(sequencesDatabase, inputSequence, result, times, tokenizationMetho
     # Finding k lowest values
     low = dict(sorted(similarities.items(), key=itemgetter(1))[:numberOfOutputs])
 
-    # Finding combined range and KNN operator:
-    combinedDict = dict(list(rangeDict.items())[:numberOfOutputs])
-    print(combinedDict)
 
     if (operator == 'KNN'):
         result.append(highDict)

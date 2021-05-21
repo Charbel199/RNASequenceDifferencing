@@ -211,7 +211,7 @@ class MyWindow1(Page):
         technique = self.technique.get()
         tokenizationMethod = self.tokenizationSingleMethod.get()
         similarityChosenMethod = self.similarityMethod.get()
-        operatorChosen = self.operator.get()
+
 
         if (tokenizationMethod == "Tag-based"):
             tokenizationMethod = tokenization.sequence_to_vector_tag
